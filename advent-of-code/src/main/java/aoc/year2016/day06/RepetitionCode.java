@@ -59,7 +59,7 @@ public class RepetitionCode {
         }
 
         // Affichage du message corrigé
-        LOGGER.log(Level.INFO, "P1 : The error-corrected version of the message is \"{}\"", this.errorCorrectedMessage);
+        LOGGER.log(Level.INFO, "The error-corrected version of the message is \"{0}\"", this.errorCorrectedMessage);
     }
 
     /**
@@ -95,7 +95,7 @@ public class RepetitionCode {
         }
 
         // Affichage du message corrigé
-        LOGGER.log(Level.INFO, "P2 : The error-corrected version of the message is \"{}\"", this.errorCorrectedMessage);
+        LOGGER.log(Level.INFO, "The error-corrected version of the message is \"{0}\"", this.errorCorrectedMessage);
     }
 
     /**
