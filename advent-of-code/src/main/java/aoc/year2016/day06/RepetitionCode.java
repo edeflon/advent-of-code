@@ -9,9 +9,6 @@ import java.util.*;
 
 public class RepetitionCode {
 
-    private String errorCorrectedMessage;
-    private List<String> messages;
-
     private static final Logger LOGGER = Logger.getLogger(RepetitionCode.class.getPackage().getName());
 
     /**
@@ -22,80 +19,48 @@ public class RepetitionCode {
      * @throws IOException : exception à jeter en cas d'erreur lors de la lecture du fichier
      */
     public void recoverMessages(String filename) throws IOException {
-        this.recoverMessageP1(filename);
-        this.recoverMessageP2(filename);
+        // Conversion de l'input en tableau de String
+        List<String> messages = this.convertFileDataToArray(filename);
+
+        if (!messages.isEmpty()) {
+            // Partie 1 : récupération du message avec les caractères les plus fréquents
+            String messageMostCommon = this.recoverMessage(messages, "max");
+            // Partie 2 : récupération du message avec les caractères les moins fréquents
+            String messageLeastCommon = this.recoverMessage(messages, "min");
+
+            // Affichage des messages corrigés
+            LOGGER.log(Level.INFO, "Most common characters: \"{0}\"", messageMostCommon);
+            LOGGER.log(Level.INFO, "Least common characters: \"{0}\"", messageLeastCommon);
+        }
     }
 
     /**
-     * Partie 1 : récupération d'un message à partir d'une liste de messages en vérifiant le nombre d'occurence des
-     * caractères par colonnes. Les caractères avec le plus d'occurences sont ceux du message original.
+     * Récupération d'un message à partir d'une liste de messages en vérifiant le nombre d'occurence des
+     * caractères par colonnes. Les caractères avec le plus ou moins d'occurences sont ceux du message original.
      *
-     * @param filename : nom du fichier où l'input est stocké
-     * @throws IOException : exception à jeter en cas d'erreur lors de la lecture du fichier
+     * @param messages : liste des messages reçus
+     * @param frequency : "max" ou "min", permet la récupération des caractères plus ou moins fréquents
+     * @return le message corrigé
      */
-    public void recoverMessageP1(String filename) throws IOException {
-        // Conversion de l'input en tableau de String
-        this.convertFileDataToArray(filename);
+    public String recoverMessage(List<String> messages, String frequency) {
+        StringBuilder stringBuilder = new StringBuilder();
 
-        if (!this.messages.isEmpty()) {
-            StringBuilder stringBuilder = new StringBuilder();
-            int messageLen = this.messages.get(0).length();
-            // Parcours de chaque caractère pour vérifier les occurences et reconstruire le message initial
-            for (int i = 0; i < messageLen; i++) {
-                HashMap<Character, Integer> charCount = new HashMap<>();
-                for (String str : this.messages) {
-                    if (charCount.containsKey(str.charAt(i))) {
-                        int count = charCount.get(str.charAt(i));
-                        charCount.put(str.charAt(i), ++count);
-                    } else {
-                        charCount.put(str.charAt(i), 1);
-                    }
-                }
-                // Récupération du caractère le plus récurrent de la colonne
-                char chara = Collections.max(charCount.entrySet(), Map.Entry.comparingByValue()).getKey();
-                stringBuilder.append(chara);
+        int messageLen = messages.get(0).length();
+        // Parcours de chaque caractère pour vérifier les occurences et reconstruire le message initial
+        for (int i = 0; i < messageLen; i++) {
+            Map<Character, Integer> charCount = new HashMap<>();
+            for (String str : messages) {
+                charCount.merge(str.charAt(i), 1, Integer::sum);
             }
-            this.errorCorrectedMessage = stringBuilder.toString();
+            // Récupération du caractère le plus ou moins récurrent de la colonne
+            char character = frequency.equals("max") ?
+                    Collections.max(charCount.entrySet(), Map.Entry.comparingByValue()).getKey()
+                    : Collections.min(charCount.entrySet(), Map.Entry.comparingByValue()).getKey();
+            stringBuilder.append(character);
         }
 
-        // Affichage du message corrigé
-        LOGGER.log(Level.INFO, "The error-corrected version of the message is \"{0}\"", this.errorCorrectedMessage);
-    }
-
-    /**
-     * Partie 2 : récupération d'un message à partir d'une liste de messages en vérifiant le nombre d'occurence des
-     * caractères par colonnes. Les caractères avec le moins d'occurences sont ceux du message original.
-     *
-     * @param filename : nom du fichier où l'input est stocké
-     * @throws IOException : exception à jeter en cas d'erreur lors de la lecture du fichier
-     */
-    public void recoverMessageP2(String filename) throws IOException {
-        // Conversion de l'input en tableau de String
-        this.convertFileDataToArray(filename);
-
-        if (!this.messages.isEmpty()) {
-            StringBuilder stringBuilder = new StringBuilder();
-            int messageLen = this.messages.get(0).length();
-            // Parcours de chaque caractère pour vérifier les occurences et reconstruire le message initial
-            for (int i = 0; i < messageLen; i++) {
-                HashMap<Character, Integer> charCount = new HashMap<>();
-                for (String str : this.messages) {
-                    if (charCount.containsKey(str.charAt(i))) {
-                        int count = charCount.get(str.charAt(i));
-                        charCount.put(str.charAt(i), ++count);
-                    } else {
-                        charCount.put(str.charAt(i), 1);
-                    }
-                }
-                // Récupération du caractère le moins récurrent de la colonne
-                char chara = Collections.min(charCount.entrySet(), Map.Entry.comparingByValue()).getKey();
-                stringBuilder.append(chara);
-            }
-            this.errorCorrectedMessage = stringBuilder.toString();
-        }
-
-        // Affichage du message corrigé
-        LOGGER.log(Level.INFO, "The error-corrected version of the message is \"{0}\"", this.errorCorrectedMessage);
+        // Retourne le message corrigé
+        return stringBuilder.toString();
     }
 
     /**
@@ -104,14 +69,15 @@ public class RepetitionCode {
      * @param filename : nom du fichier où l'input est stocké
      * @throws IOException : exception à jeter en cas d'erreur lors de la lecture du fichier
      */
-    private void convertFileDataToArray(String filename) throws IOException {
-        this.messages = new ArrayList<>();
+    private List<String> convertFileDataToArray(String filename) throws IOException {
+        List<String> messages = new ArrayList<>();
         try (FileReader fr = new FileReader("src/main/resources/inputs/2016/" + filename);
              BufferedReader bf = new BufferedReader(fr)) {
             String line;
             while((line = bf.readLine()) != null){
-                this.messages.add(line);
+                messages.add(line);
             }
+            return messages;
         }
     }
 }
