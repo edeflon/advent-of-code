@@ -6,6 +6,7 @@ import aoc.year2017.day06.MemoryReallocation;
 import java.io.IOException;
 
 public class Main {
+    // TODO : faire une méthode main plus propre
     public static void main(String[] args) throws IOException {
         // YEAR 2016 DAY 06
         // RepetitionCode rc = new RepetitionCode();
