@@ -12,69 +12,74 @@ public class RepetitionCode {
     private static final Logger LOGGER = Logger.getLogger(RepetitionCode.class.getPackage().getName());
 
     /**
-     * Récupère un message à partir d'une liste de deux manières : en regardant le caractère le plus récurrent puis le
-     * moins récurrent.
+     * Retrieve message from list with 2 different methods: by finding the most recurring character then the least
+     * recurring one.
      *
-     * @param filename : nom du fichier où l'input est stocké
-     * @throws IOException : exception à jeter en cas d'erreur lors de la lecture du fichier
+     * @param filename : name of the file where data is stored
+     * @throws IOException : exception to throw when an error is catch while reading a file
      */
     public void recoverMessages(String filename) throws IOException {
-        // Conversion de l'input en tableau de String
+        // Convert data input in String array
         List<String> messages = this.convertFileDataToArray(filename);
 
-        if (!messages.isEmpty()) {
-            // Partie 1 : récupération du message avec les caractères les plus fréquents
-            String messageMostCommon = this.recoverMessage(messages, "max");
-            // Partie 2 : récupération du message avec les caractères les moins fréquents
-            String messageLeastCommon = this.recoverMessage(messages, "min");
-
-            // Affichage des messages corrigés
-            LOGGER.log(Level.INFO, "Most common characters: \"{0}\"", messageMostCommon);
-            LOGGER.log(Level.INFO, "Least common characters: \"{0}\"", messageLeastCommon);
+        // If no message are found, we stop the function
+        if (messages.isEmpty()) {
+            return;
         }
+
+        boolean isMostCommon = true;
+        // Part 1 : retrieve message with the most recurring characters
+        String messageMostCommon = this.recoverMessage(messages, isMostCommon);
+        // Part 2 : retrieve message with the least recurring characters
+        isMostCommon = false; // We're looking for the least recurring characters
+        String messageLeastCommon = this.recoverMessage(messages, isMostCommon);
+
+        // Displaying the results of both methods
+        LOGGER.log(Level.INFO, "Most common characters: \"{0}\"", messageMostCommon);
+        LOGGER.log(Level.INFO, "Least common characters: \"{0}\"", messageLeastCommon);
     }
 
     /**
-     * Récupération d'un message à partir d'une liste de messages en vérifiant le nombre d'occurence des
-     * caractères par colonnes. Les caractères avec le plus ou moins d'occurences sont ceux du message original.
+     * Recovery of a message from message list by checking the characters occurrence by column.
+     * Characters with most or least frequency are the ones of the original message.
      *
-     * @param messages : liste des messages reçus
-     * @param frequency : "max" ou "min", permet la récupération des caractères plus ou moins fréquents
-     * @return le message corrigé
+     * @param messages     : list of the messages we received
+     * @param isMostCommon : boolean which allows to retrieve our characters, true = most common, false = least common
+     * @return corrected message
      */
-    public String recoverMessage(List<String> messages, String frequency) {
+    public String recoverMessage(List<String> messages, boolean isMostCommon) {
         StringBuilder stringBuilder = new StringBuilder();
 
         int messageLen = messages.get(0).length();
-        // Parcours de chaque caractère pour vérifier les occurences et reconstruire le message initial
+        // Check occurrence of each character and rebuild the original message
         for (int i = 0; i < messageLen; i++) {
             Map<Character, Integer> charCount = new HashMap<>();
             for (String str : messages) {
                 charCount.merge(str.charAt(i), 1, Integer::sum);
             }
-            // Récupération du caractère le plus ou moins récurrent de la colonne
-            char character = frequency.equals("max") ?
+            // Retrieve most or least recurring character of the column
+            char character = isMostCommon ?
                     Collections.max(charCount.entrySet(), Map.Entry.comparingByValue()).getKey()
                     : Collections.min(charCount.entrySet(), Map.Entry.comparingByValue()).getKey();
             stringBuilder.append(character);
         }
 
-        // Retourne le message corrigé
+        // Return corrected message
         return stringBuilder.toString();
     }
 
     /**
-     * Converti les données du fichier en argument en tableau de chaînes de caractères
+     * Convert given file data in string array.
      *
-     * @param filename : nom du fichier où l'input est stocké
-     * @throws IOException : exception à jeter en cas d'erreur lors de la lecture du fichier
+     * @param filename : name of the file where data is stored
+     * @throws IOException : exception to throw when an error is catch while reading a file
      */
     private List<String> convertFileDataToArray(String filename) throws IOException {
         List<String> messages = new ArrayList<>();
         try (FileReader fr = new FileReader("src/main/resources/inputs/2016/" + filename);
              BufferedReader bf = new BufferedReader(fr)) {
             String line;
-            while((line = bf.readLine()) != null){
+            while ((line = bf.readLine()) != null) {
                 messages.add(line);
             }
             return messages;
