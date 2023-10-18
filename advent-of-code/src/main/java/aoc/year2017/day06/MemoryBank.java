@@ -3,7 +3,6 @@ package aoc.year2017.day06;
 import lombok.*;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 @Setter
