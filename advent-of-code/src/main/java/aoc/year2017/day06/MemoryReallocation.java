@@ -12,11 +12,20 @@ public class MemoryReallocation {
 
     private static final Logger LOGGER = Logger.getLogger(MemoryReallocation.class.getPackage().getName());
 
-    public void countRedistributionCycles(String filename) throws IOException {
-        // Convert data of given file into list of memory banks
+    /**
+     * Count and display :
+     * - how many redistributions can be done before a blocks-in-banks configuration is produced that
+     * has been seen before ;
+     * - how many iterations there is between two instances of the same configuration.
+     *
+     * @param filename : name of the file where data is stored
+     * @throws IOException : thrown exception when there is an error while reading the file
+     */
+    public void countRedistributionCyclesAndIterations(String filename) throws IOException {
+        // Convert data of given file into a memory bank
         MemoryBank memoryBank = this.convertFileDataToBank(filename);
 
-        // Cycles
+        // Blocks are redistributed until a given state is seen again
         List<Integer> lastState = memoryBank.getBlocks();
         Set<List<Integer>> states = new HashSet<>();
         while (states.add(lastState)) {
@@ -24,10 +33,10 @@ public class MemoryReallocation {
             lastState = new ArrayList<>(memoryBank.getBlocks());
         }
 
-        // How much redistribution can be done before a blocks-in-banks configuration is produced that has been seen before.
+        // Display how much redistribution we encountered
         LOGGER.log(Level.INFO, "Number of redistributions done : {0}", states.size());
 
-        // Size of the loop
+        // Count how many iterations are done before seeing the duplicate state again
         List<Integer> currentState;
         int iteration = 0;
         do {
@@ -36,6 +45,7 @@ public class MemoryReallocation {
             iteration += 1;
         } while (!currentState.equals(lastState));
 
+        // Display how many iterations it took
         LOGGER.log(Level.INFO, "Iterations : {0}", iteration);
     }
 
@@ -44,12 +54,11 @@ public class MemoryReallocation {
      *
      * @param filename : name of the file where data is stored
      * @return list of memory banks
-     * @throws IOException thrown exception when there is an error while reading the file
+     * @throws IOException : thrown exception when there is an error while reading the file
      */
     private MemoryBank convertFileDataToBank(String filename) throws IOException {
-        MemoryBank memoryBank = new MemoryBank();
-        try (FileReader fr = new FileReader("src/main/resources/inputs/2017/" + filename);
-             BufferedReader bf = new BufferedReader(fr)) {
+        try (BufferedReader bf = new BufferedReader(new FileReader("src/main/resources/inputs/" + filename))) {
+            MemoryBank memoryBank = new MemoryBank();
             String line;
             if ((line = bf.readLine()) != null) {
                 memoryBank.setBlocks(Arrays.stream(line.split("\\s+"))

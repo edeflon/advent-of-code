@@ -10,17 +10,20 @@ import java.util.List;
 public class MemoryBank {
     List<Integer> blocks;
 
+    /**
+     * Redistribute the highest value block between all the blocks of the memory bank
+     */
     public void redistributeBlocks() {
-        int max = Collections.max(blocks);
-        int index = blocks.indexOf(max);
+        // Find the index and value of the blocks with the max value
+        int maxValue = Collections.max(blocks);
+        int index = blocks.indexOf(maxValue);
 
-        // Remove all the blocks from the selected blocks
+        // Reset the highest value to 0
         blocks.set(index, 0);
 
-        // Moves to the next (by index)
-        for (int i = 0; i < max; i++) {
+        // Redistribute the max value between all the blocks
+        for (int i = 0; i < maxValue; i++) {
             index = (index + 1) % blocks.size();
-            // Insert one block
             blocks.set(index, blocks.get(index) + 1);
         }
     }
