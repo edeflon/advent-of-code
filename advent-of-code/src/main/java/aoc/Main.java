@@ -14,7 +14,7 @@ public class Main {
 
         // YEAR 2017 DAY 06
         MemoryReallocation mr = new MemoryReallocation();
-        // mr.countRedistributionCycles("day_06_example.txt");
+//         mr.countRedistributionCycles("day_06_example.txt");
         mr.countRedistributionCycles("day_06.txt");
     }
 }

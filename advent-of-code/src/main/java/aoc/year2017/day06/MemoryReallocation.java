@@ -14,46 +14,26 @@ public class MemoryReallocation {
 
     public void countRedistributionCycles(String filename) throws IOException {
         // Convert data of given file into list of memory banks
-        List<MemoryBank> memoryBanks = this.convertFileDataToBanks(filename);
+        MemoryBank memoryBank = this.convertFileDataToBank(filename);
 
         // Cycles
-        boolean loopDetected = false;
-        String lastState = "";
-        Set<String> states = new HashSet<>();
-        while (!loopDetected) {
-            // Finds the memory bank with the most blocks (if tie : lowest id)
-            this.redistributeBlocks(memoryBanks);
-
-            // Continue
-            StringBuilder stringBuilder = new StringBuilder();
-            for (MemoryBank memoryBank : memoryBanks) {
-                stringBuilder.append(memoryBank.getBlocks());
-            }
-            lastState = stringBuilder.toString();
-
-            if (!states.add(lastState)) {
-                loopDetected = true;
-            }
+        List<Integer> lastState = memoryBank.getBlocks();
+        Set<List<Integer>> states = new HashSet<>();
+        while (states.add(lastState)) {
+            memoryBank.redistributeBlocks();
+            lastState = new ArrayList<>(memoryBank.getBlocks());
         }
 
         // How much redistribution can be done before a blocks-in-banks configuration is produced that has been seen before.
         LOGGER.log(Level.INFO, "Number of redistributions done : {0}", states.size());
-        LOGGER.log(Level.INFO, "Last state : {0}", lastState);
 
         // Size of the loop
-        String currentState = "";
+        List<Integer> currentState;
         int iteration = 0;
         do {
+            memoryBank.redistributeBlocks();
+            currentState = new ArrayList<>(memoryBank.getBlocks());
             iteration += 1;
-
-            this.redistributeBlocks(memoryBanks);
-
-            // Continue
-            StringBuilder stringBuilder = new StringBuilder();
-            for (MemoryBank memoryBank : memoryBanks) {
-                stringBuilder.append(memoryBank.getBlocks());
-            }
-            currentState = stringBuilder.toString();
         } while (!currentState.equals(lastState));
 
         LOGGER.log(Level.INFO, "Iterations : {0}", iteration);
@@ -66,40 +46,17 @@ public class MemoryReallocation {
      * @return list of memory banks
      * @throws IOException thrown exception when there is an error while reading the file
      */
-    private List<MemoryBank> convertFileDataToBanks(String filename) throws IOException {
-        List<MemoryBank> memoryBanks = new ArrayList<>();
+    private MemoryBank convertFileDataToBank(String filename) throws IOException {
+        MemoryBank memoryBank = new MemoryBank();
         try (FileReader fr = new FileReader("src/main/resources/inputs/2017/" + filename);
              BufferedReader bf = new BufferedReader(fr)) {
             String line;
-            if((line = bf.readLine()) != null){
-                List<Integer> allBlocks = Arrays.stream(line.split("\\s+"))
+            if ((line = bf.readLine()) != null) {
+                memoryBank.setBlocks(Arrays.stream(line.split("\\s+"))
                         .map(Integer::parseInt)
-                        .collect(Collectors.toList());
-
-                for(int i = 0; i < allBlocks.size(); i++) {
-                    MemoryBank memoryBank = new MemoryBank(i, allBlocks.get(i));
-                    memoryBanks.add(memoryBank);
-                }
+                        .collect(Collectors.toList()));
             }
-            return memoryBanks;
-        }
-    }
-
-    private void redistributeBlocks(List<MemoryBank> memoryBanks) {
-        MemoryBank selectedBank = memoryBanks.stream()
-                .max(Comparator.comparing(MemoryBank::getBlocks))
-                .orElseThrow();
-
-        // Remove all the blocks from the selected blocks
-        int blocksToRedistribute = selectedBank.getBlocks();
-        selectedBank.setBlocks(0);
-
-        // Moves to the next (by index)
-        int id = selectedBank.getIndex();
-        for (int i = 0; i < blocksToRedistribute; i++) {
-            id = (id + 1) % memoryBanks.size();
-            // Insert one block
-            memoryBanks.get(id).addBlock();
+            return memoryBank;
         }
     }
 }
