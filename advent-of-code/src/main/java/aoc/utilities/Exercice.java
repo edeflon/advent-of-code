@@ -8,7 +8,7 @@ import lombok.Getter;
 import java.io.IOException;
 import java.util.function.Consumer;
 
-public enum ProgramEnum {
+public enum Exercice {
     // 2016
     REPETITION_CODE("2016", "06", (filename) -> {
         try {
@@ -44,12 +44,17 @@ public enum ProgramEnum {
 
     private final Consumer<String> exerciceFunction;
 
-    ProgramEnum(String year, String day, Consumer<String> exerciceFunction) {
+    Exercice(String year, String day, Consumer<String> exerciceFunction) {
         this.year = year;
         this.day = day;
         this.exerciceFunction = exerciceFunction;
     }
 
+    /**
+     * Execute the function associated to the selected exercice
+     *
+     * @param isTest : define on which input we start the exercice
+     */
     public void executeExerciceFuntion(boolean isTest) {
         if (isTest) {
             exerciceFunction.accept(String.format("%4.4s/day_%2.2s_example.txt", year, day));
