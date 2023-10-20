@@ -1,0 +1,60 @@
+package aoc.utilities;
+
+import aoc.year2016.day06.RepetitionCode;
+import aoc.year2017.day06.MemoryReallocation;
+import aoc.year2018.day06.ChronalCoordinates;
+import lombok.Getter;
+
+import java.io.IOException;
+import java.util.function.Consumer;
+
+public enum ProgramEnum {
+    // 2016
+    REPETITION_CODE("2016", "06", (filename) -> {
+        try {
+            new RepetitionCode().recoverMessages(filename);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }),
+
+    // 2017
+    MEMORY_REALLOCATION("2017", "06", (filename) -> {
+        try {
+            new MemoryReallocation().countRedistributionCyclesAndIterations(filename);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }),
+
+    // 2018
+    CHRONAL_COORDINATES("2018", "06", (filename) -> {
+        try {
+            new ChronalCoordinates().findLargestAreaSize(filename);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    });
+
+    @Getter
+    private final String year;
+
+    @Getter
+    private final String day;
+
+    private final Consumer<String> exerciceFunction;
+
+    ProgramEnum(String year, String day, Consumer<String> exerciceFunction) {
+        this.year = year;
+        this.day = day;
+        this.exerciceFunction = exerciceFunction;
+    }
+
+    public void executeExerciceFuntion(boolean isTest) {
+        if (isTest) {
+            exerciceFunction.accept(String.format("%4.4s/day_%2.2s_example.txt", year, day));
+        } else {
+            exerciceFunction.accept(String.format("%4.4s/day_%2.2s.txt", year, day));
+        }
+    }
+}
