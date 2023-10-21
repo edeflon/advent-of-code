@@ -4,8 +4,18 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ChronalCoordinates {
+
+    private static final Logger LOGGER = Logger.getLogger(ChronalCoordinates.class.getPackage().getName());
+
+    private record Coordinate(
+            int x,
+            int y
+    ) {
+    }
 
     /**
      * Find the largest area size around a given coordinate
@@ -29,12 +39,13 @@ public class ChronalCoordinates {
             for (int j = minCoordinate.y(); j <= maxCoordinate.y(); j++) {
                 Coordinate currentCoordinate = new Coordinate(i, j);
 
-                // TODO : simplifier
                 // Calculate distance between current coordinate and each one of coordinates set
                 Map<Coordinate, Integer> distances = new HashMap<>();
                 coordinates.forEach((coordinate) ->
                         distances.put(coordinate, calculateManhattanDistance(coordinate, currentCoordinate))
                 );
+
+                // Retrieve minimal distance between current coordinate and others
                 int minDistance = Collections.min(distances.entrySet(), Map.Entry.comparingByValue()).getValue();
 
                 // Retrieve the closest coordinates of current coordinate
@@ -72,8 +83,8 @@ public class ChronalCoordinates {
                 .max(Integer::compare)
                 .orElseThrow();
 
-        // TODO : Remplacer par un log
-        System.out.println("Size of the largest area: " + largestArea);
+        // Display the size of the largest area
+        LOGGER.log(Level.INFO, "Size of the largest area: {0}", largestArea);
     }
 
     /**
@@ -83,7 +94,6 @@ public class ChronalCoordinates {
      * @return Lowest coordinate according to the given set
      */
     private Coordinate initMinCoordinate(Set<Coordinate> coordinates) {
-        // TODO : simplify to one stream ?
         int x = coordinates.stream()
                 .mapToInt(Coordinate::x)
                 .min()
@@ -102,7 +112,6 @@ public class ChronalCoordinates {
      * @return Highest coordinate according to the given set
      */
     private Coordinate initMaxCoordinate(Set<Coordinate> coordinates) {
-        // TODO : simplify to one stream ?
         int x = coordinates.stream()
                 .mapToInt(Coordinate::x)
                 .max()
