@@ -7,6 +7,12 @@ import java.util.*;
 
 public class ChronalCoordinates {
 
+    /**
+     * Find the largest area size around a given coordinate
+     *
+     * @param filename Name of the file containing the data
+     * @throws IOException Exception thrown when an error is catch while reading the file
+     */
     public void findLargestAreaSize(String filename) throws IOException {
         // Convert data input to Coordinates set
         Set<Coordinate> coordinates = this.convertFileDataToSet(filename);
@@ -15,41 +21,44 @@ public class ChronalCoordinates {
         Coordinate minCoordinate = initMinCoordinate(coordinates);
         Coordinate maxCoordinate = initMaxCoordinate(coordinates);
 
-        System.out.println(minCoordinate);
-        System.out.println(maxCoordinate);
-
-        // Calculate size of area
+        // Create a map to associate Coordinate with the closest points
         Map<Coordinate, List<Coordinate>> closestLocations = new HashMap<>();
         coordinates.forEach((coordinate) -> closestLocations.put(coordinate, new ArrayList<>()));
 
         for (int i = minCoordinate.x(); i <= maxCoordinate.x(); i++) {
             for (int j = minCoordinate.y(); j <= maxCoordinate.y(); j++) {
                 Coordinate currentCoordinate = new Coordinate(i, j);
+
+                // TODO : simplifier
+                // Calculate distance between current coordinate and each one of coordinates set
                 Map<Coordinate, Integer> distances = new HashMap<>();
-
                 coordinates.forEach((coordinate) ->
-                    distances.put(coordinate, calculateManhattanDistance(coordinate, currentCoordinate))
+                        distances.put(coordinate, calculateManhattanDistance(coordinate, currentCoordinate))
                 );
+                int minDistance = Collections.min(distances.entrySet(), Map.Entry.comparingByValue()).getValue();
 
-                int min = Collections.min(distances.entrySet(), Map.Entry.comparingByValue()).getValue();
+                // Retrieve the closest coordinates of current coordinate
                 List<Coordinate> closestCoordinates = distances.entrySet().stream()
-                        .filter((distance) -> min == distance.getValue())
+                        .filter((distance) -> minDistance == distance.getValue())
                         .map(Map.Entry::getKey)
                         .toList();
 
+                // If only one Coordinate is found, we register the current point in its close locations
                 if (1 == closestCoordinates.size()) {
-                    List<Coordinate> cc = closestLocations.get(closestCoordinates.get(0));
-                    cc.add(currentCoordinate);
-                    closestLocations.put(closestCoordinates.get(0), cc);
+                    closestLocations.get(closestCoordinates.get(0)).add(currentCoordinate);
                 }
             }
         }
 
-        // Retire des candidats les coordonnées les plus proche des "bords" (aka infinite)
+        // Remove Coordinate with infinite areas
         coordinates.forEach((coordinate) -> {
             List<Coordinate> closestPoints = new ArrayList<>(closestLocations.get(coordinate));
             List<Coordinate> infiniteAreas = closestPoints.stream()
-                    .filter((location) -> location.x() == 0 || location.x() == 10 || location.y() == 0 || location.y() == 10)
+                    .filter((location) ->
+                            location.x() == minCoordinate.x() ||
+                                    location.x() == maxCoordinate.x() ||
+                                    location.y() == minCoordinate.y() ||
+                                    location.y() == maxCoordinate.y())
                     .toList();
 
             if (!infiniteAreas.isEmpty()) {
@@ -57,16 +66,24 @@ public class ChronalCoordinates {
             }
         });
 
-        // Find the largest area
+        // Find the largest area around the remaining Coordinates
         int largestArea = closestLocations.values().stream()
                 .map(List::size)
                 .max(Integer::compare)
                 .orElseThrow();
 
-        System.out.println(largestArea);
+        // TODO : Remplacer par un log
+        System.out.println("Size of the largest area: " + largestArea);
     }
 
-    public Coordinate initMinCoordinate(Set<Coordinate> coordinates) {
+    /**
+     * Find the lowest coordinate possible
+     *
+     * @param coordinates Set of coordinates
+     * @return Lowest coordinate according to the given set
+     */
+    private Coordinate initMinCoordinate(Set<Coordinate> coordinates) {
+        // TODO : simplify to one stream ?
         int x = coordinates.stream()
                 .mapToInt(Coordinate::x)
                 .min()
@@ -78,7 +95,14 @@ public class ChronalCoordinates {
         return new Coordinate(x, y);
     }
 
-    public Coordinate initMaxCoordinate(Set<Coordinate> coordinates) {
+    /**
+     * Find the highest coordinate possible
+     *
+     * @param coordinates Set of coordinates
+     * @return Highest coordinate according to the given set
+     */
+    private Coordinate initMaxCoordinate(Set<Coordinate> coordinates) {
+        // TODO : simplify to one stream ?
         int x = coordinates.stream()
                 .mapToInt(Coordinate::x)
                 .max()
@@ -90,12 +114,26 @@ public class ChronalCoordinates {
         return new Coordinate(x, y);
     }
 
-    public int calculateManhattanDistance(Coordinate firstCoordinate, Coordinate secondCoordinate) {
+    /**
+     * Calculate distance between given coordinates
+     *
+     * @param firstCoordinate  Coordinate (x, y)
+     * @param secondCoordinate Coordinate (x, y)
+     * @return Distance between given coordinates
+     */
+    private int calculateManhattanDistance(Coordinate firstCoordinate, Coordinate secondCoordinate) {
         int deltaX = Math.abs(firstCoordinate.x() - secondCoordinate.x());
         int deltaY = Math.abs(firstCoordinate.y() - secondCoordinate.y());
         return deltaX + deltaY;
     }
 
+    /**
+     * Convert data of given file in a set of coordinates
+     *
+     * @param filename Name of the file containing the data
+     * @return Set of the coordinates extracted of the file
+     * @throws IOException Exception thrown when an error is catch while reading the file
+     */
     private Set<Coordinate> convertFileDataToSet(String filename) throws IOException {
         try (BufferedReader bf = new BufferedReader(new FileReader("src/main/resources/inputs/" + filename))) {
             Set<Coordinate> coordinates = new HashSet<>();
@@ -104,7 +142,8 @@ public class ChronalCoordinates {
                 List<Integer> positions = Arrays.stream(line.split("\\s*,\\s*"))
                         .map(Integer::parseInt)
                         .toList();
-                coordinates.add(new Coordinate(positions.get(0), positions.get(1)));
+                // It seems that the coordinates are stored as "y, x" in the datafile
+                coordinates.add(new Coordinate(positions.get(1), positions.get(0)));
             }
             return coordinates;
         }
