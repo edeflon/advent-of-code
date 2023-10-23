@@ -11,7 +11,8 @@ public class ChronalCoordinates {
 
     private static final Logger LOGGER = Logger.getLogger(ChronalCoordinates.class.getPackage().getName());
 
-    private record Coordinate(int x, int y) {}
+    private record Coordinate(int x, int y) {
+    }
 
     /**
      * Find the largest area size around a given coordinate
@@ -61,11 +62,10 @@ public class ChronalCoordinates {
         coordinates.forEach(coordinate -> {
             List<Coordinate> closestPoints = new ArrayList<>(closestLocations.get(coordinate));
             List<Coordinate> infiniteAreas = closestPoints.stream()
-                    .filter(location ->
-                            location.x() == minCoordinate.x() ||
-                                    location.x() == maxCoordinate.x() ||
-                                    location.y() == minCoordinate.y() ||
-                                    location.y() == maxCoordinate.y())
+                    .filter(location -> location.x() == minCoordinate.x() ||
+                            location.x() == maxCoordinate.x() ||
+                            location.y() == minCoordinate.y() ||
+                            location.y() == maxCoordinate.y())
                     .toList();
 
             if (!infiniteAreas.isEmpty()) {
