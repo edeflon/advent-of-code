@@ -11,11 +11,7 @@ public class ChronalCoordinates {
 
     private static final Logger LOGGER = Logger.getLogger(ChronalCoordinates.class.getPackage().getName());
 
-    private record Coordinate(
-            int x,
-            int y
-    ) {
-    }
+    private record Coordinate(int x, int y) {}
 
     /**
      * Find the largest area size around a given coordinate
@@ -33,7 +29,7 @@ public class ChronalCoordinates {
 
         // Create a map to associate Coordinate with the closest points
         Map<Coordinate, List<Coordinate>> closestLocations = new HashMap<>();
-        coordinates.forEach((coordinate) -> closestLocations.put(coordinate, new ArrayList<>()));
+        coordinates.forEach(coordinate -> closestLocations.put(coordinate, new ArrayList<>()));
 
         for (int i = minCoordinate.x(); i <= maxCoordinate.x(); i++) {
             for (int j = minCoordinate.y(); j <= maxCoordinate.y(); j++) {
@@ -41,7 +37,7 @@ public class ChronalCoordinates {
 
                 // Calculate distance between current coordinate and each one of coordinates set
                 Map<Coordinate, Integer> distances = new HashMap<>();
-                coordinates.forEach((coordinate) ->
+                coordinates.forEach(coordinate ->
                         distances.put(coordinate, calculateManhattanDistance(coordinate, currentCoordinate))
                 );
 
@@ -50,7 +46,7 @@ public class ChronalCoordinates {
 
                 // Retrieve the closest coordinates of current coordinate
                 List<Coordinate> closestCoordinates = distances.entrySet().stream()
-                        .filter((distance) -> minDistance == distance.getValue())
+                        .filter(distance -> minDistance == distance.getValue())
                         .map(Map.Entry::getKey)
                         .toList();
 
@@ -62,10 +58,10 @@ public class ChronalCoordinates {
         }
 
         // Remove Coordinate with infinite areas
-        coordinates.forEach((coordinate) -> {
+        coordinates.forEach(coordinate -> {
             List<Coordinate> closestPoints = new ArrayList<>(closestLocations.get(coordinate));
             List<Coordinate> infiniteAreas = closestPoints.stream()
-                    .filter((location) ->
+                    .filter(location ->
                             location.x() == minCoordinate.x() ||
                                     location.x() == maxCoordinate.x() ||
                                     location.y() == minCoordinate.y() ||
