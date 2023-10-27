@@ -40,7 +40,7 @@ public enum Exercice {
     // 2019
     UNIVERSAL_ORBIT_MAP("2019", "06", (filename) -> {
         try {
-            new UniversalOrbitMap().countTotalNumberOfOrbits(filename);
+            new UniversalOrbitMap().calculateOrbits(filename);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
