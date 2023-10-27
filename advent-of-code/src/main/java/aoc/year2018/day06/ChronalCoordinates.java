@@ -13,10 +13,7 @@ public class ChronalCoordinates {
 
     private static final Logger LOGGER = Logger.getLogger(ChronalCoordinates.class.getPackage().getName());
 
-    private record Coordinate(
-            int x,
-            int y
-    ) {
+    private record Coordinate(int x, int y) {
     }
 
     /**
@@ -35,7 +32,7 @@ public class ChronalCoordinates {
 
         // Create a map to associate Coordinate with the closest points
         Map<Coordinate, List<Coordinate>> closestLocations = new HashMap<>();
-        coordinates.forEach((coordinate) -> closestLocations.put(coordinate, new ArrayList<>()));
+        coordinates.forEach(coordinate -> closestLocations.put(coordinate, new ArrayList<>()));
 
         for (int x = minCoordinate.x(); x <= maxCoordinate.x(); x++) {
             for (int y = minCoordinate.y(); y <= maxCoordinate.y(); y++) {
@@ -43,7 +40,7 @@ public class ChronalCoordinates {
 
                 // Calculate distance between current coordinate and each one of coordinates set
                 Map<Coordinate, Integer> distances = new HashMap<>();
-                coordinates.forEach((coordinate) ->
+                coordinates.forEach(coordinate ->
                         distances.put(coordinate, calculateManhattanDistance(coordinate, currentCoordinate))
                 );
 
@@ -52,7 +49,7 @@ public class ChronalCoordinates {
 
                 // Retrieve the closest coordinates of current coordinate
                 List<Coordinate> closestCoordinates = distances.entrySet().stream()
-                        .filter((distance) -> minDistance == distance.getValue())
+                        .filter(distance -> minDistance == distance.getValue())
                         .map(Map.Entry::getKey)
                         .toList();
 
@@ -64,14 +61,13 @@ public class ChronalCoordinates {
         }
 
         // Remove Coordinate with infinite areas
-        coordinates.forEach((coordinate) -> {
+        coordinates.forEach(coordinate -> {
             List<Coordinate> closestPoints = new ArrayList<>(closestLocations.get(coordinate));
             List<Coordinate> infiniteAreas = closestPoints.stream()
-                    .filter((location) ->
-                            location.x() == minCoordinate.x() ||
-                                    location.x() == maxCoordinate.x() ||
-                                    location.y() == minCoordinate.y() ||
-                                    location.y() == maxCoordinate.y())
+                    .filter(location -> location.x() == minCoordinate.x() ||
+                            location.x() == maxCoordinate.x() ||
+                            location.y() == minCoordinate.y() ||
+                            location.y() == maxCoordinate.y())
                     .toList();
 
             if (!infiniteAreas.isEmpty()) {
