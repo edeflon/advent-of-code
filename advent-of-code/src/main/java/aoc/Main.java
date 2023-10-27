@@ -26,6 +26,7 @@ public class Main {
     }
 
     /**
+     * Retrieve exercice linked to given date
      *
      * @param year : year of the exercice
      * @param day : day of the exercice
