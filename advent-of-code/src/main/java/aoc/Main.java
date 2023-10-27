@@ -1,19 +1,41 @@
 package aoc;
 
-import aoc.year2017.day06.MemoryReallocation;
+import aoc.utilities.Exercice;
 
-import java.io.IOException;
+import java.util.Arrays;
+import java.util.Objects;
 
 public class Main {
-    // TODO : faire une méthode main plus propre
-    public static void main(String[] args) throws IOException {
-        // YEAR 2016 DAY 06
-        // RepetitionCode rc = new RepetitionCode();
-        // rc.recoverMessages("2016/day_06.txt");
+    public static void main(String[] args) {
+        if (args.length < 3) {
+            throw new IllegalArgumentException("Too few arguments : cmd <year> <day> <isTest>");
+        }
 
-        // YEAR 2017 DAY 06
-        MemoryReallocation mr = new MemoryReallocation();
-//         mr.countRedistributionCycles("2017/day_06_example.txt");
-        mr.countRedistributionCyclesAndIterations("2017/day_06.txt");
+        String year = args[0];
+        String day = args[1];
+        boolean isTest = Boolean.parseBoolean(args[2]);
+
+        Exercice exercice = findEnumByDate(year, day);
+
+        if (null != exercice) {
+            // Execute function linked to the exercice we found
+            exercice.executeExerciceFuntion(isTest);
+        } else {
+            throw new IllegalArgumentException("No program found for the given date");
+        }
+    }
+
+    /**
+     *
+     * @param year : year of the exercice
+     * @param day : day of the exercice
+     * @return exercice associated to the year and date
+     */
+    public static Exercice findEnumByDate(String year, String day) {
+        return Arrays.stream(Exercice.values())
+                .filter((exercice -> Objects.equals(year, exercice.getYear())
+                        && Objects.equals(day, exercice.getDay())))
+                .findFirst()
+                .orElse(null);
     }
 }
