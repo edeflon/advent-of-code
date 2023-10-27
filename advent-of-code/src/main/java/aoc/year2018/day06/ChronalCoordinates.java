@@ -37,9 +37,9 @@ public class ChronalCoordinates {
         Map<Coordinate, List<Coordinate>> closestLocations = new HashMap<>();
         coordinates.forEach((coordinate) -> closestLocations.put(coordinate, new ArrayList<>()));
 
-        for (int i = minCoordinate.x(); i <= maxCoordinate.x(); i++) {
-            for (int j = minCoordinate.y(); j <= maxCoordinate.y(); j++) {
-                Coordinate currentCoordinate = new Coordinate(i, j);
+        for (int x = minCoordinate.x(); x <= maxCoordinate.x(); x++) {
+            for (int y = minCoordinate.y(); y <= maxCoordinate.y(); y++) {
+                Coordinate currentCoordinate = new Coordinate(x, y);
 
                 // Calculate distance between current coordinate and each one of coordinates set
                 Map<Coordinate, Integer> distances = new HashMap<>();
