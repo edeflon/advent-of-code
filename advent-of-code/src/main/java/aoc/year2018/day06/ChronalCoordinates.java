@@ -48,7 +48,7 @@ public class ChronalCoordinates {
                 );
 
                 // Retrieve minimal distance between current coordinate and others
-                int minDistance = Collections.min(distances.entrySet(), Map.Entry.comparingByValue()).getValue();
+                int minDistance = Collections.min(distances.values());
 
                 // Retrieve the closest coordinates of current coordinate
                 List<Coordinate> closestCoordinates = distances.entrySet().stream()
