@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ChronalCoordinates {
 
@@ -148,11 +150,14 @@ public class ChronalCoordinates {
             Set<Coordinate> coordinates = new HashSet<>();
             String line;
             while ((line = bf.readLine()) != null) {
-                List<Integer> positions = Arrays.stream(line.split("\\s*,\\s*"))
-                        .map(Integer::parseInt)
-                        .toList();
-                // It seems that the coordinates are stored as "y, x" in the datafile
-                coordinates.add(new Coordinate(positions.get(1), positions.get(0)));
+                Pattern pattern = Pattern.compile("(?<x>\\d+), (?<y>\\d+)");
+                Matcher matcher = pattern.matcher(line);
+                if(matcher.find()) {
+                    int x = Integer.parseInt(matcher.group("x"));
+                    int y = Integer.parseInt(matcher.group("y"));
+                    coordinates.add(new Coordinate(x, y));
+                }
+
             }
             return coordinates;
         }
