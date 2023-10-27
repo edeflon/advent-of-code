@@ -3,6 +3,7 @@ package aoc.utilities;
 import aoc.year2016.day06.RepetitionCode;
 import aoc.year2017.day06.MemoryReallocation;
 import aoc.year2018.day06.ChronalCoordinates;
+import aoc.year2019.day06.UniversalOrbitMap;
 import lombok.Getter;
 
 import java.io.IOException;
@@ -34,6 +35,16 @@ public enum Exercice {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }),
+
+    // 2019
+    UNIVERSAL_ORBIT_MAP("2019", "06", (filename) -> {
+//        try {
+            new UniversalOrbitMap().countNumberOfOrbits(filename);
+//        }
+//        catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
     });
 
     @Getter
