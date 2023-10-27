@@ -76,8 +76,7 @@ public class RepetitionCode {
      */
     private List<String> convertFileDataToArray(String filename) throws IOException {
         List<String> messages = new ArrayList<>();
-        try (FileReader fr = new FileReader("src/main/resources/inputs/2016/" + filename);
-             BufferedReader bf = new BufferedReader(fr)) {
+        try (BufferedReader bf = new BufferedReader(new FileReader("src/main/resources/inputs/" + filename))) {
             String line;
             while ((line = bf.readLine()) != null) {
                 messages.add(line);
