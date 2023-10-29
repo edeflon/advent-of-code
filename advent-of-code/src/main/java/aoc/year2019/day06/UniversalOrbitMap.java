@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 @Slf4j
 public class UniversalOrbitMap {
@@ -36,7 +37,7 @@ public class UniversalOrbitMap {
         // Retrieve direct orbits given by the file data
         this.directOrbits = this.convertFileDataToSet(filename);
 
-        // Count total number of direct and indirect orbits for each orbitting space object
+        // Count total number of direct and indirect orbits for each space object in orbit
         this.countTotalNumberOfOrbits();
 
         // Calculate how many orbital transfers it takes to go from "YOU" to "SAN"
@@ -120,24 +121,45 @@ public class UniversalOrbitMap {
     }
 
     /**
-     * Calculate how many orbital transfers it take to go from one space object to another
+     * Calculate how many orbital transfers it takes to go from one space object to another
      *
-     * @param startingName    Name of space object we use to start our transfers
-     * @param destinationName Name of space object we use as our destination
+     * @param source      Name of space object we use to start our transfers
+     * @param destination Name of space object we use as our destination
      */
-    private void calculateOrbitalTransfers(String startingName, String destinationName) {
-        String startingCenter = this.findCenterOfOrbit(startingName);
-        String destinationCenter = this.findCenterOfOrbit(destinationName);
+    private void calculateOrbitalTransfers(String source, String destination) {
+        // Find paths of source and destination to COM (universal Center Of Mass)
+        List<String> sourceToCom = this.findPathToCOM(source);
+        List<String> destinationToCom = this.findPathToCOM(destination);
 
-        int count = 0;
-        String lastSpaceObject = startingName;
-        String currentSpaceObject = startingCenter;
-        do {
+        // Find step where paths intersect
+        String commonStep = destinationToCom.stream()
+                .filter(sourceToCom::contains)
+                .findFirst()
+                .orElse(null);
 
+        // If a common step is found, we remove it and the following ones
+        if (null != commonStep) {
+            this.cleanDuplicates(sourceToCom, commonStep);
+            this.cleanDuplicates(destinationToCom, commonStep);
+        } else {
+            throw new NoSuchElementException();
+        }
 
+        // Build the final path
+        List<String> orbitalTransfers = Stream.of(sourceToCom, List.of(commonStep), destinationToCom)
+                        .flatMap(Collection::stream)
+                        .toList();
 
-        } while (!destinationCenter.equals(currentSpaceObject));
-        System.out.println(count);
+        // Display the result
+        // Minus 1 because we don't count the first object where the source was in orbit around at the beginning
+        log.info("It takes "
+                + (orbitalTransfers.size() - 1)
+                + " orbital transfer to go from \""
+                + source
+                +"\" to \""
+                + destination
+                + "\""
+        );
     }
 
     /**
@@ -155,16 +177,31 @@ public class UniversalOrbitMap {
     }
 
     /**
-     * Retrieve name of space object in orbit
+     * Find path from given source to COM (universal Center Of Mass)
      *
-     * @param center Name of space object at center of direct orbit
-     * @return Name of space object in direct orbit
+     * @param source Space object we use at starting point
+     * @return List of space objects encountered while looking for COM
      */
-    private String findObjectInOrbit(String center) {
-        return this.directOrbits.stream()
-                .filter(directOrbit -> Objects.equals(directOrbit.center, center))
-                .map(directOrbit -> directOrbit.objectInOrbit)
-                .findFirst()
-                .orElseThrow();
+    private List<String> findPathToCOM(String source) {
+        List<String> path = new ArrayList<>();
+
+        String spaceObject = source;
+        while (!path.contains("COM")) {
+            spaceObject = this.findCenterOfOrbit(spaceObject);
+            path.add(spaceObject);
+        }
+
+        return path;
+    }
+
+    /**
+     * Remove steps from given common step to the end of list
+     *
+     * @param steps     List of space objects
+     * @param duplicate Space object we need to remove
+     */
+    private void cleanDuplicates(List<String> steps, String duplicate) {
+        int index = steps.indexOf(duplicate);
+        steps.subList(index, steps.size()).clear();
     }
 }
