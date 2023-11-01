@@ -1,6 +1,7 @@
 package aoc.year2019.day06;
 
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -55,13 +56,13 @@ public class UniversalOrbitMap {
      */
     private List<DirectOrbit> convertFileDataToSet(String filename) throws IOException {
         try (BufferedReader bf = new BufferedReader(new FileReader("src/main/resources/inputs/" + filename))) {
-            List<DirectOrbit> directOrbits = new ArrayList<>();
+            List<DirectOrbit> orbits = new ArrayList<>();
             String line;
             while ((line = bf.readLine()) != null) {
                 Pattern pattern = Pattern.compile("(?<center>[A-Z1-9]+)\\)(?<objectInOrbit>[A-Z1-9]+)");
                 Matcher matcher = pattern.matcher(line);
                 if (matcher.find()) {
-                    directOrbits.add(
+                    orbits.add(
                             new DirectOrbit(
                                     matcher.group("center"),
                                     matcher.group("objectInOrbit")
@@ -69,7 +70,7 @@ public class UniversalOrbitMap {
                     );
                 }
             }
-            return directOrbits;
+            return orbits;
         }
     }
 
@@ -77,22 +78,14 @@ public class UniversalOrbitMap {
      * Count total number of direct and indirect orbits between space objects given in the file data
      */
     private void countTotalNumberOfOrbits() {
-        // Number of orbits (direct and indirect) per space object
-        Map<String, Integer> numberOfOrbit = new HashMap<>();
-
         // Counting each orbit for each space object in orbit
-        this.directOrbits.forEach(directOrbit -> {
-            if (null == directOrbit) {
-                return;
-            }
-
-            int count = this.countNumberOfOrbitsForOneSpaceObject(directOrbit);
-            numberOfOrbit.put(directOrbit.objectInOrbit, count);
-        });
+        int count = 0;
+        for (@NotNull DirectOrbit directOrbit : this.directOrbits) {
+            count += this.countNumberOfOrbitsForOneSpaceObject(directOrbit);
+        }
 
         // Sum of all the orbits and display of result
-        int totalOrbits = numberOfOrbit.values().stream().reduce(0, Integer::sum);
-        log.info("Total number of orbits : {}", totalOrbits);
+        log.info("Total number of orbits : {}", count);
     }
 
     /**
@@ -104,15 +97,14 @@ public class UniversalOrbitMap {
     private int countNumberOfOrbitsForOneSpaceObject(DirectOrbit firstDirectOrbit) {
         int count = 1; // By default, every space object in orbit has 1 orbit
 
-        DirectOrbit currentDirectOrbit = firstDirectOrbit;
+        Optional<DirectOrbit> currentDirectOrbit = Optional.of(firstDirectOrbit);
 
-        while (null != currentDirectOrbit) {
-            String objectInOrbit = currentDirectOrbit.center;
+        while (currentDirectOrbit.isPresent()) {
+            String objectInOrbit = currentDirectOrbit.get().center;
             currentDirectOrbit = this.directOrbits.stream()
                     .filter(filteredDirectOrbit -> Objects.equals(filteredDirectOrbit.objectInOrbit, objectInOrbit))
-                    .findFirst()
-                    .orElse(null);
-            if (null != currentDirectOrbit) {
+                    .findFirst();
+            if (currentDirectOrbit.isPresent()) {
                 count += 1;
             }
         }
@@ -132,34 +124,24 @@ public class UniversalOrbitMap {
         List<String> destinationToCom = this.findPathToCOM(destination);
 
         // Find step where paths intersect
-        String commonStep = destinationToCom.stream()
+        List<String> commonSteps = destinationToCom.stream()
                 .filter(sourceToCom::contains)
-                .findFirst()
-                .orElse(null);
+                .toList();
 
-        // If a common step is found, we remove it and the following ones
-        if (null != commonStep) {
-            this.cleanDuplicates(sourceToCom, commonStep);
-            this.cleanDuplicates(destinationToCom, commonStep);
-        } else {
-            throw new NoSuchElementException();
-        }
+        // Remove common step and the following ones
+        sourceToCom.removeAll(commonSteps);
+        destinationToCom.removeAll(commonSteps);
 
         // Build the final path
-        List<String> orbitalTransfers = Stream.of(sourceToCom, List.of(commonStep), destinationToCom)
-                        .flatMap(Collection::stream)
-                        .toList();
+        String firstCommonStep = commonSteps.get(0);
+        List<String> orbitalTransfers = Stream.of(sourceToCom, List.of(firstCommonStep), destinationToCom)
+                .flatMap(Collection::stream)
+                .toList();
 
         // Display the result
         // Minus 1 because we don't count the first object where the source was in orbit around at the beginning
-        log.info("It takes "
-                + (orbitalTransfers.size() - 1)
-                + " orbital transfer to go from \""
-                + source
-                +"\" to \""
-                + destination
-                + "\""
-        );
+        int numberOfOrbitalTransfers = orbitalTransfers.size() - 1;
+        log.info("It takes {} orbital transfer to go from \"{}\" to \"{}\".", numberOfOrbitalTransfers, source, destination);
     }
 
     /**
@@ -171,8 +153,8 @@ public class UniversalOrbitMap {
     private String findCenterOfOrbit(String objectInOrbit) {
         return this.directOrbits.stream()
                 .filter(directOrbit -> Objects.equals(directOrbit.objectInOrbit, objectInOrbit))
-                .map(directOrbit -> directOrbit.center)
                 .findFirst()
+                .map(directOrbit -> directOrbit.center)
                 .orElseThrow();
     }
 
@@ -192,16 +174,5 @@ public class UniversalOrbitMap {
         }
 
         return path;
-    }
-
-    /**
-     * Remove steps from given common step to the end of list
-     *
-     * @param steps     List of space objects
-     * @param duplicate Space object we need to remove
-     */
-    private void cleanDuplicates(List<String> steps, String duplicate) {
-        int index = steps.indexOf(duplicate);
-        steps.subList(index, steps.size()).clear();
     }
 }
