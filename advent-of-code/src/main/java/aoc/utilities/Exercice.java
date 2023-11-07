@@ -3,6 +3,7 @@ package aoc.utilities;
 import aoc.year2016.day06.RepetitionCode;
 import aoc.year2017.day06.MemoryReallocation;
 import aoc.year2018.day06.ChronalCoordinates;
+import aoc.year2019.day06.UniversalOrbitMap;
 import lombok.Getter;
 
 import java.io.IOException;
@@ -10,7 +11,7 @@ import java.util.function.Consumer;
 
 public enum Exercice {
     // 2016
-    REPETITION_CODE("2016", "06", (filename) -> {
+    REPETITION_CODE("2016", "06", filename -> {
         try {
             new RepetitionCode().recoverMessages(filename);
         } catch (IOException e) {
@@ -19,7 +20,7 @@ public enum Exercice {
     }),
 
     // 2017
-    MEMORY_REALLOCATION("2017", "06", (filename) -> {
+    MEMORY_REALLOCATION("2017", "06", filename -> {
         try {
             new MemoryReallocation().countRedistributionCyclesAndIterations(filename);
         } catch (IOException e) {
@@ -28,9 +29,18 @@ public enum Exercice {
     }),
 
     // 2018
-    CHRONAL_COORDINATES("2018", "06", (filename) -> {
+    CHRONAL_COORDINATES("2018", "06", filename -> {
         try {
             new ChronalCoordinates().findLargestAreaSize(filename);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }),
+
+    // 2019
+    UNIVERSAL_ORBIT_MAP("2019", "06", filename -> {
+        try {
+            new UniversalOrbitMap().calculateOrbits(filename);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
