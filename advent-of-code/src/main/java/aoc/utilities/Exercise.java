@@ -8,11 +8,11 @@ import aoc.year2021.day06.LanternfishSimulation;
 import lombok.Getter;
 
 import java.io.IOException;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
-public enum Exercice {
+public enum Exercise {
     // 2016
-    REPETITION_CODE("2016", "06", filename -> {
+    REPETITION_CODE("2016", "06", (filename, _isSecondPart) -> {
         try {
             new RepetitionCode().recoverMessages(filename);
         } catch (IOException e) {
@@ -21,7 +21,7 @@ public enum Exercice {
     }),
 
     // 2017
-    MEMORY_REALLOCATION("2017", "06", filename -> {
+    MEMORY_REALLOCATION("2017", "06", (filename, _isSecondPart) -> {
         try {
             new MemoryReallocation().countRedistributionCyclesAndIterations(filename);
         } catch (IOException e) {
@@ -30,7 +30,7 @@ public enum Exercice {
     }),
 
     // 2018
-    CHRONAL_COORDINATES("2018", "06", filename -> {
+    CHRONAL_COORDINATES("2018", "06", (filename, _isSecondPart) -> {
         try {
             new ChronalCoordinates().findLargestAreaSize(filename);
         } catch (IOException e) {
@@ -39,7 +39,7 @@ public enum Exercice {
     }),
 
     // 2019
-    UNIVERSAL_ORBIT_MAP("2019", "06", filename -> {
+    UNIVERSAL_ORBIT_MAP("2019", "06", (filename, _isSecondPart) -> {
         try {
             new UniversalOrbitMap().calculateOrbits(filename);
         } catch (IOException e) {
@@ -48,9 +48,9 @@ public enum Exercice {
     }),
 
     // 2021
-    LANTERNFISH_SIMULATION("2021", "06", filename -> {
+    LANTERNFISH_SIMULATION("2021", "06", (filename, isSecondPart) -> {
         try {
-            new LanternfishSimulation().countLanternfishsPopulation(filename);
+            new LanternfishSimulation().countLanternfishsPopulation(filename, isSecondPart);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -62,24 +62,24 @@ public enum Exercice {
     @Getter
     private final String day;
 
-    private final Consumer<String> exerciceFunction;
+    private final BiConsumer<String, Boolean> exerciseFunction;
 
-    Exercice(String year, String day, Consumer<String> exerciceFunction) {
+    Exercise(String year, String day, BiConsumer<String, Boolean> exerciseFunction) {
         this.year = year;
         this.day = day;
-        this.exerciceFunction = exerciceFunction;
+        this.exerciseFunction = exerciseFunction;
     }
 
     /**
-     * Execute the function associated to the selected exercice
+     * Execute the function associated to the selected exercise
      *
-     * @param isTest : define on which input we start the exercice
+     * @param isTest : define on which input we start the exercise
      */
-    public void executeExerciceFuntion(boolean isTest) {
+    public void executeExerciseFunction(boolean isTest, boolean isSecondPart) {
         if (isTest) {
-            exerciceFunction.accept(String.format("%4.4s/day_%2.2s_example.txt", year, day));
+            exerciseFunction.accept(String.format("%4.4s/day_%2.2s_example.txt", year, day), isSecondPart);
         } else {
-            exerciceFunction.accept(String.format("%4.4s/day_%2.2s.txt", year, day));
+            exerciseFunction.accept(String.format("%4.4s/day_%2.2s.txt", year, day), isSecondPart);
         }
     }
 }
