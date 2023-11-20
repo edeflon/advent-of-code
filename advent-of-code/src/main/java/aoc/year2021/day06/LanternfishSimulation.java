@@ -45,7 +45,7 @@ public class LanternfishSimulation {
             daysCounter++;
         }
 
-        log.info("There will be {} lanterfishs after {} days.", lanternfishs.size(), totalDays);
+        log.info("There will be {} lanternfishs after {} days.", lanternfishs.size(), totalDays);
     }
 
     /**
