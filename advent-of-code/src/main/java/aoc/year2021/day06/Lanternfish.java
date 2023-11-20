@@ -2,6 +2,8 @@ package aoc.year2021.day06;
 
 import lombok.Getter;
 
+import java.util.Optional;
+
 @Getter
 public class Lanternfish {
     private int reproductiveTimer;
@@ -14,15 +16,17 @@ public class Lanternfish {
         this.reproductiveTimer = reproductiveTimer;
     }
 
-    public void aDayPass() {
+    public Optional<Lanternfish> aDayPassed() {
         if (0 == this.reproductiveTimer) {
             this.reproductiveTimer = 6;
+            return Optional.of(this.reproduce());
         } else {
-            this.reproductiveTimer -= 1;
+            this.reproductiveTimer--;
+            return Optional.empty();
         }
     }
 
-    public Lanternfish reproduce() {
+    private Lanternfish reproduce() {
         return new Lanternfish();
     }
 }

@@ -5,8 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,12 +20,8 @@ public class LanternfishSimulation {
     public void countLanternfishsPopulation(String filename) throws IOException {
         List<Lanternfish> lanternfishs = this.convertFileDataToSet(filename);
 
-        // Part 1
         int days = 80;
         this.countSmallLanternfishsPopulation(lanternfishs, days);
-
-        // Part 2
-        this.countLanternfishsPopulationAfter256Days(lanternfishs);
     }
 
     /**
@@ -37,48 +32,18 @@ public class LanternfishSimulation {
      */
     public void countSmallLanternfishsPopulation(List<Lanternfish> lanternfishs, int totalDays) {
         int daysCounter = 0;
-
         while (totalDays > daysCounter) {
             List<Lanternfish> babies = new ArrayList<>();
 
             lanternfishs.forEach(lanternfish -> {
-                if (0 == lanternfish.getReproductiveTimer()) {
-                    babies.add(lanternfish.reproduce());
-                }
-                lanternfish.aDayPass();
+                Optional<Lanternfish> baby = lanternfish.aDayPassed();
+                baby.ifPresent(babies::add);
             });
 
             lanternfishs.addAll(babies);
 
             daysCounter++;
         }
-
-        log.info("There will be {} lanterfishs after {} days.", lanternfishs.size(), totalDays);
-    }
-
-    /**
-     * Count number of lanternfish in population after 256 days
-     *
-     * @param lanternfishs Population of lanternfish
-     */
-    public void countLanternfishsPopulationAfter256Days(List<Lanternfish> lanternfishs) {
-        int totalDays = 256;
-        int daysCounter = 0;
-
-//        while (totalDays > daysCounter) {
-//            List<Lanternfish> babies = new ArrayList<>();
-//
-//            lanternfishs.forEach(lanternfish -> {
-//                if (0 == lanternfish.getReproductiveTimer()) {
-//                    babies.add(lanternfish.reproduce());
-//                }
-//                lanternfish.aDayPass();
-//            });
-//
-//            lanternfishs.addAll(babies);
-//
-//            daysCounter++;
-//        }
 
         log.info("There will be {} lanterfishs after {} days.", lanternfishs.size(), totalDays);
     }
