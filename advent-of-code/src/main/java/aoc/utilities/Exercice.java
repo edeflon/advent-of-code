@@ -4,6 +4,7 @@ import aoc.year2016.day06.RepetitionCode;
 import aoc.year2017.day06.MemoryReallocation;
 import aoc.year2018.day06.ChronalCoordinates;
 import aoc.year2019.day06.UniversalOrbitMap;
+import aoc.year2021.day06.LanternfishSimulation;
 import lombok.Getter;
 
 import java.io.IOException;
@@ -41,6 +42,15 @@ public enum Exercice {
     UNIVERSAL_ORBIT_MAP("2019", "06", filename -> {
         try {
             new UniversalOrbitMap().calculateOrbits(filename);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }),
+
+    // 2021
+    LANTERNFISH_SIMULATION("2021", "06", filename -> {
+        try {
+            new LanternfishSimulation().countLanternfishsPopulation(filename);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
