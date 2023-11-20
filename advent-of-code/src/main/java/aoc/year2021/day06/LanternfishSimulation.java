@@ -5,7 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,24 +15,15 @@ import java.util.regex.Pattern;
 public class LanternfishSimulation {
 
     /**
-     * Count number of lanternfish in population (2 methods: any number of days (below 100), 256 days)
+     * Count number of lanternfish in population after given total number of days
      *
      * @param filename Name of the file containing the data
      */
-    public void countLanternfishsPopulation(String filename) throws IOException {
+    public void countLanternfishsPopulation(String filename, boolean isSecondPart) throws IOException {
         List<Lanternfish> lanternfishs = this.convertFileDataToSet(filename);
 
-        int days = 80;
-        this.countSmallLanternfishsPopulation(lanternfishs, days);
-    }
+        int totalDays = isSecondPart ? 256 : 80;
 
-    /**
-     * Count number of lanternfish in population after given total number of days
-     *
-     * @param lanternfishs Population of lanternfish
-     * @param totalDays Number of days where the lanternfish population has to live
-     */
-    public void countSmallLanternfishsPopulation(List<Lanternfish> lanternfishs, int totalDays) {
         int daysCounter = 0;
         while (totalDays > daysCounter) {
             List<Lanternfish> babies = new ArrayList<>();
