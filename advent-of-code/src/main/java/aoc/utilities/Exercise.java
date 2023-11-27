@@ -5,11 +5,13 @@ import aoc.year2017.day06.MemoryReallocation;
 import aoc.year2018.day06.ChronalCoordinates;
 import aoc.year2019.day06.UniversalOrbitMap;
 import aoc.year2021.day06.LanternfishSimulation;
+import aoc.year2022.day06.TuningTrouble;
 import lombok.Getter;
 
 import java.io.IOException;
 import java.util.function.BiConsumer;
 
+// FIXME : corriger les try-catch
 public enum Exercise {
     // 2016
     REPETITION_CODE("2016", "06", (filename, _isSecondPart) -> {
@@ -51,6 +53,15 @@ public enum Exercise {
     LANTERNFISH_SIMULATION("2021", "06", (filename, isSecondPart) -> {
         try {
             new LanternfishSimulation().countLanternfishsPopulation(filename, isSecondPart);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }),
+
+    // 2022
+    TUNING_TROUBLE("2022", "06", (filename, isSecondPart) -> {
+        try {
+            new TuningTrouble().countCharactersBeforeStartOfPacket(filename, isSecondPart);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
