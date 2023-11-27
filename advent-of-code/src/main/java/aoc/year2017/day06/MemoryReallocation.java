@@ -1,16 +1,11 @@
 package aoc.year2017.day06;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
+@Slf4j
 public class MemoryReallocation {
-
-    private static final Logger LOGGER = Logger.getLogger(MemoryReallocation.class.getPackage().getName());
 
     /**
      * Count and display :
@@ -18,12 +13,11 @@ public class MemoryReallocation {
      * has been seen before ;
      * - how many iterations there is between two instances of the same configuration.
      *
-     * @param filename : name of the file where data is stored
-     * @throws IOException : thrown exception when there is an error while reading the file
+     * @param fileContent Content of the file to process
      */
-    public void countRedistributionCyclesAndIterations(String filename) throws IOException {
+    public void countRedistributionCyclesAndIterations(List<String> fileContent) {
         // Convert data of given file into a memory bank
-        MemoryBank memoryBank = this.convertFileDataToBank(filename);
+        MemoryBank memoryBank = this.convertFileContentToBank(fileContent);
 
         // Blocks are redistributed until a given state is seen again
         List<Integer> lastState = memoryBank.getBlocks();
@@ -34,7 +28,7 @@ public class MemoryReallocation {
         }
 
         // Display how much redistribution we encountered
-        LOGGER.log(Level.INFO, "Number of redistributions done : {0}", states.size());
+        log.info("Number of redistributions done : {}", states.size());
 
         // Count how many iterations are done before seeing the duplicate state again
         List<Integer> currentState;
@@ -46,26 +40,24 @@ public class MemoryReallocation {
         } while (!currentState.equals(lastState));
 
         // Display how many iterations it took
-        LOGGER.log(Level.INFO, "Iterations : {0}", iteration);
+        log.info("Iterations : {}", iteration);
     }
 
     /**
-     * Convert data of given file into list of memory banks
+     * Convert content file into list of memory banks
      *
-     * @param filename : name of the file where data is stored
-     * @return list of memory banks
-     * @throws IOException : thrown exception when there is an error while reading the file
+     * @param fileContent File content to convert
+     * @return List of memory banks
      */
-    private MemoryBank convertFileDataToBank(String filename) throws IOException {
-        try (BufferedReader bf = new BufferedReader(new FileReader("src/main/resources/inputs/" + filename))) {
-            MemoryBank memoryBank = new MemoryBank();
-            String line;
-            if ((line = bf.readLine()) != null) {
-                memoryBank.setBlocks(Arrays.stream(line.split("\\s+"))
-                        .map(Integer::parseInt)
-                        .collect(Collectors.toList()));
-            }
-            return memoryBank;
+    private MemoryBank convertFileContentToBank(List<String> fileContent) {
+        MemoryBank memoryBank = new MemoryBank();
+        if (1 == fileContent.size()) {
+            memoryBank.setBlocks(
+                    Arrays.stream(fileContent.get(0).split("\\s+"))
+                            .map(Integer::parseInt)
+                            .toList()
+            );
         }
+        return memoryBank;
     }
 }

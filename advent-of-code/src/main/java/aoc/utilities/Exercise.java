@@ -8,53 +8,35 @@ import aoc.year2021.day06.LanternfishSimulation;
 import lombok.Getter;
 
 import java.io.IOException;
+import java.io.InvalidObjectException;
+import java.util.List;
 import java.util.function.BiConsumer;
 
 public enum Exercise {
     // 2016
-    REPETITION_CODE("2016", "06", (filename, _isSecondPart) -> {
-        try {
-            new RepetitionCode().recoverMessages(filename);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }),
+    REPETITION_CODE("2016", "06", (fileContent, isSecondPart) ->
+            new RepetitionCode().recoverMessages(fileContent, isSecondPart)
+    ),
 
     // 2017
-    MEMORY_REALLOCATION("2017", "06", (filename, _isSecondPart) -> {
-        try {
-            new MemoryReallocation().countRedistributionCyclesAndIterations(filename);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }),
+    MEMORY_REALLOCATION("2017", "06", (fileContent, _isSecondPart) ->
+            new MemoryReallocation().countRedistributionCyclesAndIterations(fileContent)
+    ),
 
     // 2018
-    CHRONAL_COORDINATES("2018", "06", (filename, _isSecondPart) -> {
-        try {
-            new ChronalCoordinates().findLargestAreaSize(filename);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }),
+    CHRONAL_COORDINATES("2018", "06", (fileContent, _isSecondPart) ->
+            new ChronalCoordinates().findLargestAreaSize(fileContent)
+    ),
 
     // 2019
-    UNIVERSAL_ORBIT_MAP("2019", "06", (filename, _isSecondPart) -> {
-        try {
-            new UniversalOrbitMap().calculateOrbits(filename);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }),
+    UNIVERSAL_ORBIT_MAP("2019", "06", (fileContent, _isSecondPart) ->
+            new UniversalOrbitMap().calculateOrbits(fileContent)
+    ),
 
     // 2021
-    LANTERNFISH_SIMULATION("2021", "06", (filename, isSecondPart) -> {
-        try {
-            new LanternfishSimulation().countLanternfishsPopulation(filename, isSecondPart);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    });
+    LANTERNFISH_SIMULATION("2021", "06", (fileContent, isSecondPart) ->
+            new LanternfishSimulation().countLanternfishsPopulation(fileContent, isSecondPart)
+    );
 
     @Getter
     private final String year;
@@ -62,9 +44,9 @@ public enum Exercise {
     @Getter
     private final String day;
 
-    private final BiConsumer<String, Boolean> exerciseFunction;
+    private final BiConsumer<List<String>, Boolean> exerciseFunction;
 
-    Exercise(String year, String day, BiConsumer<String, Boolean> exerciseFunction) {
+    Exercise(String year, String day, BiConsumer<List<String>, Boolean> exerciseFunction) {
         this.year = year;
         this.day = day;
         this.exerciseFunction = exerciseFunction;
@@ -73,13 +55,21 @@ public enum Exercise {
     /**
      * Execute the function associated to the selected exercise
      *
-     * @param isTest : define on which input we start the exercise
+     * @param isTest       Define on which input we start the exercise
+     * @param isSecondPart Define if we're testing the first or second part of exercise
+     * @throws IOException Exception thrown when an error is catch while reading the file
      */
-    public void executeExerciseFunction(boolean isTest, boolean isSecondPart) {
-        if (isTest) {
-            exerciseFunction.accept(String.format("%4.4s/day_%2.2s_example.txt", year, day), isSecondPart);
+    public void executeExerciseFunction(boolean isTest, boolean isSecondPart) throws IOException {
+        DataExtractor dataExtractor = new DataExtractor();
+        String filename = isTest ?
+                String.format("%4.4s/day_%2.2s_example.txt", year, day)
+                : String.format("%4.4s/day_%2.2s.txt", year, day);
+        List<String> fileContent = dataExtractor.convertFileDataToString(filename);
+
+        if (null != fileContent) {
+            exerciseFunction.accept(fileContent, isSecondPart);
         } else {
-            exerciseFunction.accept(String.format("%4.4s/day_%2.2s.txt", year, day), isSecondPart);
+            throw new InvalidObjectException("No content found in given file.");
         }
     }
 }
