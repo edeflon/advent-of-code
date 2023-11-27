@@ -14,7 +14,7 @@ public class TuningTrouble {
     /**
      * Find how many characters need to be processed before the first start-of-packet marker is detected.
      *
-     * @param filename Name of the file containing the data
+     * @param filename     Name of the file containing the data
      * @param isSecondPart Check if we're testing first or second part of exercise
      * @throws IOException Exception thrown when an error is catch while reading the file
      */
@@ -38,7 +38,7 @@ public class TuningTrouble {
             }
         }
 
-        log.info(String.valueOf(firstMarkerIndex));
+        log.info("First marker after character {}: {}", firstMarkerIndex, datastream);
     }
 
     /**
