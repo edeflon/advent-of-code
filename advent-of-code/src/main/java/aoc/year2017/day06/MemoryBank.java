@@ -1,6 +1,7 @@
 package aoc.year2017.day06;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Collections;
 import java.util.List;

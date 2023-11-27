@@ -3,6 +3,7 @@ package aoc.year2017.day06;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class MemoryReallocation {
@@ -55,7 +56,7 @@ public class MemoryReallocation {
             memoryBank.setBlocks(
                     Arrays.stream(fileContent.get(0).split("\\s+"))
                             .map(Integer::parseInt)
-                            .toList()
+                            .collect(Collectors.toCollection(ArrayList::new))
             );
         }
         return memoryBank;
