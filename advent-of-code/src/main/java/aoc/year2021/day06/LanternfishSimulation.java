@@ -2,9 +2,6 @@ package aoc.year2021.day06;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,14 +15,14 @@ public class LanternfishSimulation {
     /**
      * Count number of lanternfish in population after given number of days
      *
-     * @param filename Name of the file containing the data
+     * @param fileContent Content of the file to process
      */
-    public void countLanternfishsPopulation(String filename, boolean isSecondPart) throws IOException {
-        // Retrieve data from file
-        List<Integer> lanternfishTimers = this.convertFileDataToSet(filename);
+    public void countLanternfishsPopulation(List<String> fileContent, boolean isSecondPart) {
+        // Retrieve lanternfish timers from file content
+        List<Integer> lanternfishTimers = this.convertFileContentToSet(fileContent);
 
         Map<Integer, Long> lanternfishs = new HashMap<>();
-        for (int timer: lanternfishTimers) {
+        for (int timer : lanternfishTimers) {
             lanternfishs.put(
                     timer,
                     lanternfishs.getOrDefault(timer, 0L) + 1
@@ -54,24 +51,20 @@ public class LanternfishSimulation {
     }
 
     /**
-     * Convert data of given file in a list of lanternfish
+     * Convert file content to a list of lanternfish
      *
-     * @param filename Name of the file containing the data
+     * @param fileContent File content to convert
      * @return List of lanternfish timers (int) extracted of the file
-     * @throws IOException Exception thrown when an error is catch while reading the file
      */
-    private List<Integer> convertFileDataToSet(String filename) throws IOException {
-        try (BufferedReader bf = new BufferedReader(new FileReader("src/main/resources/inputs/" + filename))) {
-            List<Integer> lanternfishTimers = new ArrayList<>();
-            String line;
-            while ((line = bf.readLine()) != null) {
-                Pattern pattern = Pattern.compile("\\d");
-                Matcher matcher = pattern.matcher(line);
-                while (matcher.find()) {
-                    lanternfishTimers.add(Integer.parseInt(matcher.group(0)));
-                }
+    private List<Integer> convertFileContentToSet(List<String> fileContent) {
+        List<Integer> lanternfishTimers = new ArrayList<>();
+        for (String content : fileContent) {
+            Pattern pattern = Pattern.compile("\\d");
+            Matcher matcher = pattern.matcher(content);
+            while (matcher.find()) {
+                lanternfishTimers.add(Integer.parseInt(matcher.group(0)));
             }
-            return lanternfishTimers;
         }
+        return lanternfishTimers;
     }
 }

@@ -3,9 +3,6 @@ package aoc.year2019.day06;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -31,12 +28,11 @@ public class UniversalOrbitMap {
      * - calls countTotalNumberOfOrbits
      * - calls calculateOrbitalTransfers
      *
-     * @param filename Name of the file containing the data
-     * @throws IOException Exception thrown when an error is catch while reading the file
+     * @param fileContent Content of the file to process
      */
-    public void calculateOrbits(String filename) throws IOException {
-        // Retrieve direct orbits given by the file data
-        this.directOrbits = this.convertFileDataToSet(filename);
+    public void calculateOrbits(List<String> fileContent) {
+        // Retrieve direct orbits given in the file content
+        this.directOrbits = this.convertFileContentToSet(fileContent);
 
         // Count total number of direct and indirect orbits for each space object in orbit
         this.countTotalNumberOfOrbits();
@@ -48,30 +44,26 @@ public class UniversalOrbitMap {
     }
 
     /**
-     * Retrieve orbits objects from data file
+     * Retrieve orbits objects from file content
      *
-     * @param filename Name of the file containing the data
+     * @param fileContent File content to convert
      * @return List of the orbits extracted of the file
-     * @throws IOException Exception thrown when an error is catch while reading the file
      */
-    private List<DirectOrbit> convertFileDataToSet(String filename) throws IOException {
-        try (BufferedReader bf = new BufferedReader(new FileReader("src/main/resources/inputs/" + filename))) {
-            List<DirectOrbit> orbits = new ArrayList<>();
-            String line;
-            while ((line = bf.readLine()) != null) {
-                Pattern pattern = Pattern.compile("(?<center>[A-Z1-9]+)\\)(?<objectInOrbit>[A-Z1-9]+)");
-                Matcher matcher = pattern.matcher(line);
-                if (matcher.find()) {
-                    orbits.add(
-                            new DirectOrbit(
-                                    matcher.group("center"),
-                                    matcher.group("objectInOrbit")
-                            )
-                    );
-                }
+    private List<DirectOrbit> convertFileContentToSet(List<String> fileContent) {
+        List<DirectOrbit> orbits = new ArrayList<>();
+        for (String content : fileContent) {
+            Pattern pattern = Pattern.compile("(?<center>[A-Z1-9]+)\\)(?<objectInOrbit>[A-Z1-9]+)");
+            Matcher matcher = pattern.matcher(content);
+            if (matcher.find()) {
+                orbits.add(
+                        new DirectOrbit(
+                                matcher.group("center"),
+                                matcher.group("objectInOrbit")
+                        )
+                );
             }
-            return orbits;
         }
+        return orbits;
     }
 
     /**
