@@ -6,6 +6,7 @@ import aoc.year2018.day06.ChronalCoordinates;
 import aoc.year2019.day06.UniversalOrbitMap;
 import aoc.year2021.day06.LanternfishSimulation;
 import aoc.year2023.day02.CubeConundrum;
+import aoc.year2023.day03.GearRatios;
 import lombok.Getter;
 
 import java.io.IOException;
@@ -42,6 +43,10 @@ public enum Exercise {
     // 2023
     CUBE_CONUNDRUM("2023", "02", (fileContent, isSecondPart) ->
             new CubeConundrum().sumIdsOfGames(fileContent)
+    ),
+
+    GEAR_RATIOS("2023", "03", (fileContent, isSecondPart) ->
+            new GearRatios().sumPartNumbers(fileContent)
     );
 
     @Getter
