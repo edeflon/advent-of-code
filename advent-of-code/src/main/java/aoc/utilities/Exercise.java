@@ -6,6 +6,7 @@ import aoc.year2018.day06.ChronalCoordinates;
 import aoc.year2019.day06.UniversalOrbitMap;
 import aoc.year2021.day06.LanternfishSimulation;
 import aoc.year2023.day01.Trebuchet;
+import aoc.year2023.day04.Scratchcards;
 import lombok.Getter;
 
 import java.io.IOException;
@@ -42,6 +43,10 @@ public enum Exercise {
     // 2023
     TREBUCHET("2023", "01", (fileContent, isSecondPart) ->
             new Trebuchet().sumOfAllCalibration(fileContent)
+    ),
+
+    SCRATCHCARDS("2023", "04", (fileContent, isSecondPart) ->
+            new Scratchcards().totalPointsWorth(fileContent)
     );
 
     @Getter
