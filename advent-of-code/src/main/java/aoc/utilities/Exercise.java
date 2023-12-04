@@ -5,6 +5,7 @@ import aoc.year2017.day06.MemoryReallocation;
 import aoc.year2018.day06.ChronalCoordinates;
 import aoc.year2019.day06.UniversalOrbitMap;
 import aoc.year2021.day06.LanternfishSimulation;
+import aoc.year2023.day01.Trebuchet;
 import lombok.Getter;
 
 import java.io.IOException;
@@ -36,6 +37,11 @@ public enum Exercise {
     // 2021
     LANTERNFISH_SIMULATION("2021", "06", (fileContent, isSecondPart) ->
             new LanternfishSimulation().countLanternfishsPopulation(fileContent, isSecondPart)
+    ),
+
+    // 2023
+    TREBUCHET("2023", "01", (fileContent, isSecondPart) ->
+            new Trebuchet().sumOfAllCalibration(fileContent)
     );
 
     @Getter
