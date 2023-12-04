@@ -8,6 +8,7 @@ import aoc.year2021.day06.LanternfishSimulation;
 import aoc.year2023.day02.CubeConundrum;
 import aoc.year2023.day01.Trebuchet;
 import aoc.year2023.day03.GearRatios;
+import aoc.year2023.day04.Scratchcards;
 import lombok.Getter;
 
 import java.io.IOException;
@@ -52,6 +53,10 @@ public enum Exercise {
 
     GEAR_RATIOS("2023", "03", (fileContent, isSecondPart) ->
             new GearRatios().sumPartNumbers(fileContent)
+    ),
+
+    SCRATCHCARDS("2023", "04", (fileContent, isSecondPart) ->
+            new Scratchcards().totalPointsWorth(fileContent)
     );
 
     @Getter
