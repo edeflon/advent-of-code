@@ -6,6 +6,7 @@ import aoc.year2018.day06.ChronalCoordinates;
 import aoc.year2019.day06.UniversalOrbitMap;
 import aoc.year2021.day06.LanternfishSimulation;
 import aoc.year2023.day02.CubeConundrum;
+import aoc.year2023.day01.Trebuchet;
 import aoc.year2023.day03.GearRatios;
 import lombok.Getter;
 
@@ -41,6 +42,10 @@ public enum Exercise {
     ),
 
     // 2023
+    TREBUCHET("2023", "01", (fileContent, isSecondPart) ->
+            new Trebuchet().sumOfAllCalibration(fileContent)
+    ),
+
     CUBE_CONUNDRUM("2023", "02", (fileContent, isSecondPart) ->
             new CubeConundrum().sumIdsOfGames(fileContent)
     ),
