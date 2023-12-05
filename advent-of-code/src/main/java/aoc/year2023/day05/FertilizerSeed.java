@@ -57,7 +57,7 @@ public class FertilizerSeed {
             Long currentSeed = seeds.get(i);
             i++;
             Long seedRange = seeds.get(i);
-            System.out.print("|");
+            System.out.println(currentSeed + " to " + (currentSeed + seedRange));
             for (long j = 0L; j < seedRange; j++) {
                 currentSeed += j;
                 Long soil = this.findNextNumber(currentSeed, MapType.SEED_TO_SOIL, data);
@@ -70,9 +70,7 @@ public class FertilizerSeed {
                 if (location < lowest) {
                     lowest = location;
                 }
-                System.out.print("|");
             }
-            System.out.println(";");
         }
 
         System.out.println(lowest);
