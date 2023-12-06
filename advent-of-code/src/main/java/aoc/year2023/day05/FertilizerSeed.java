@@ -1,12 +1,14 @@
 package aoc.year2023.day05;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
+
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
+@Slf4j
 public class FertilizerSeed {
 
     public void lowestLocationNumber(List<String> fileContent) {
@@ -52,38 +54,46 @@ public class FertilizerSeed {
             }
         }
 
-        long lowest = Long.MAX_VALUE;
-        for (int i = 0; i < seeds.size(); i++) {
-            Long currentSeed = seeds.get(i);
-            i++;
-            Long seedRange = seeds.get(i);
-            System.out.println(currentSeed + " to " + (currentSeed + seedRange));
-            for (long j = 0L; j < seedRange; j++) {
-                currentSeed += j;
-                Long soil = this.findNextNumber(currentSeed, MapType.SEED_TO_SOIL, data);
-                Long fertilizer = this.findNextNumber(soil, MapType.SOIL_TO_FERTI, data);
-                Long water = this.findNextNumber(fertilizer, MapType.FERTI_TO_WATER, data);
-                Long light = this.findNextNumber(water, MapType.WATER_TO_LIGHT, data);
-                Long temp = this.findNextNumber(light, MapType.LIGHT_TO_TEMP, data);
-                Long hum = this.findNextNumber(temp, MapType.TEMP_TO_HUM, data);
-                Long location = this.findNextNumber(hum, MapType.HUM_TO_LOCATION, data);
-                if (location < lowest) {
-                    lowest = location;
-                }
-            }
+        // PART 2
+        record Seed(Long value, Long range) {
         }
 
-        System.out.println(lowest);
+        Set<Seed> seedsWithRange = new HashSet<>();
+        for (int i = 0; i < seeds.size(); i += 2) {
+            seedsWithRange.add(new Seed(seeds.get(i), seeds.get(i + 1)));
+        }
+
+        Long lowest = seedsWithRange.parallelStream()
+                .map(seed -> LongStream.range(seed.value, seed.value + seed.range)
+                        .parallel()
+                        .map(s -> this.getLocation(s, data))
+                        .min()
+                )
+                .filter(OptionalLong::isPresent)
+                .map(OptionalLong::getAsLong)
+                .sorted()
+                .findFirst().orElseThrow();
+
+        log.info("{}", lowest);
     }
 
-    private Long findNextNumber(Long number, MapType type, List<MapData> datas) {
-        Optional<MapData> res = datas.stream()
-                .filter(data -> data.isNextNumber(number, type))
+    private Long getLocation(Long seed, List<MapData> data) {
+        Long soil = this.findNextNumber(seed, data.stream().filter(d -> d.mapType == MapType.SEED_TO_SOIL).toList());
+        Long fertilizer = this.findNextNumber(soil, data.stream().filter(d -> d.mapType == MapType.SOIL_TO_FERTI).toList());
+        Long water = this.findNextNumber(fertilizer, data.stream().filter(d -> d.mapType == MapType.FERTI_TO_WATER).toList());
+        Long light = this.findNextNumber(water, data.stream().filter(d -> d.mapType == MapType.WATER_TO_LIGHT).toList());
+        Long temp = this.findNextNumber(light, data.stream().filter(d -> d.mapType == MapType.LIGHT_TO_TEMP).toList());
+        Long hum = this.findNextNumber(temp, data.stream().filter(d -> d.mapType == MapType.TEMP_TO_HUM).toList());
+        return this.findNextNumber(hum, data.stream().filter(d -> d.mapType == MapType.HUM_TO_LOCATION).toList());
+    }
+
+    private Long findNextNumber(Long number, List<MapData> datas) {
+        Optional<Long> res = datas.stream()
+                .map(data -> data.nextNumber(number))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
                 .findFirst();
 
-        if (res.isEmpty()) {
-            return number;
-        }
-        return res.get().nextNumber(number);
+        return res.orElse(number);
     }
 }
