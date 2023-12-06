@@ -9,6 +9,7 @@ import aoc.year2023.day02.CubeConundrum;
 import aoc.year2023.day01.Trebuchet;
 import aoc.year2023.day03.GearRatios;
 import aoc.year2023.day04.Scratchcards;
+import aoc.year2023.day05.FertilizerSeed;
 import lombok.Getter;
 
 import java.io.IOException;
@@ -57,6 +58,10 @@ public enum Exercise {
 
     SCRATCHCARDS("2023", "04", (fileContent, isSecondPart) ->
             new Scratchcards().totalPointsWorth(fileContent)
+    ),
+
+    FERTILIZER_SEED("2023", "05", (fileContent, isSecondPart) ->
+            new FertilizerSeed().lowestLocationNumber(fileContent)
     );
 
     @Getter
