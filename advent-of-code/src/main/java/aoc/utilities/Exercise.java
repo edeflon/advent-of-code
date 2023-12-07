@@ -9,7 +9,7 @@ import aoc.year2023.day02.CubeConundrum;
 import aoc.year2023.day01.Trebuchet;
 import aoc.year2023.day03.GearRatios;
 import aoc.year2023.day04.Scratchcards;
-import aoc.year2023.day05.WaitForIt;
+import aoc.year2023.day06.WaitForIt;
 import aoc.year2023.day05.FertilizerSeed;
 import aoc.year2023.day07.CamelCards;
 import lombok.Getter;
@@ -46,31 +46,31 @@ public enum Exercise {
     ),
 
     // 2023
-    TREBUCHET("2023", "01", (fileContent, isSecondPart) ->
+    TREBUCHET("2023", "01", (fileContent, _isSecondPart) ->
             new Trebuchet().sumOfAllCalibration(fileContent)
     ),
 
-    CUBE_CONUNDRUM("2023", "02", (fileContent, isSecondPart) ->
+    CUBE_CONUNDRUM("2023", "02", (fileContent, _isSecondPart) ->
             new CubeConundrum().sumIdsOfGames(fileContent)
     ),
 
-    GEAR_RATIOS("2023", "03", (fileContent, isSecondPart) ->
+    GEAR_RATIOS("2023", "03", (fileContent, _isSecondPart) ->
             new GearRatios().sumPartNumbers(fileContent)
     ),
 
-    SCRATCHCARDS("2023", "04", (fileContent, isSecondPart) ->
+    SCRATCHCARDS("2023", "04", (fileContent, _isSecondPart) ->
             new Scratchcards().totalPointsWorth(fileContent)
     ),
 
-    FERTILIZER_SEED("2023", "05", (fileContent, isSecondPart) ->
+    FERTILIZER_SEED("2023", "05", (fileContent, _isSecondPart) ->
             new FertilizerSeed().lowestLocationNumber(fileContent)
     ),
 
-    WAIT_FOR_IT("2023", "06", (fileContent, isSecondPart) ->
+    WAIT_FOR_IT("2023", "06", (fileContent, _isSecondPart) ->
             new WaitForIt().numberOfWaysBeatRecords(fileContent)
     ),
 
-    CAMEL_CARDS("2023", "07", (fileContent, isSecondPart) ->
+    CAMEL_CARDS("2023", "07", (fileContent, _isSecondPart) ->
             new CamelCards().totalWinnings(fileContent)
     );
 
