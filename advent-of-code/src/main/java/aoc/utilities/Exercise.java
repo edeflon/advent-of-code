@@ -11,6 +11,7 @@ import aoc.year2023.day03.GearRatios;
 import aoc.year2023.day04.Scratchcards;
 import aoc.year2023.day05.WaitForIt;
 import aoc.year2023.day05.FertilizerSeed;
+import aoc.year2023.day07.CamelCards;
 import lombok.Getter;
 
 import java.io.IOException;
@@ -60,13 +61,17 @@ public enum Exercise {
     SCRATCHCARDS("2023", "04", (fileContent, isSecondPart) ->
             new Scratchcards().totalPointsWorth(fileContent)
     ),
-  
+
     FERTILIZER_SEED("2023", "05", (fileContent, isSecondPart) ->
             new FertilizerSeed().lowestLocationNumber(fileContent)
     ),
 
     WAIT_FOR_IT("2023", "06", (fileContent, isSecondPart) ->
             new WaitForIt().numberOfWaysBeatRecords(fileContent)
+    ),
+
+    CAMEL_CARDS("2023", "07", (fileContent, isSecondPart) ->
+            new CamelCards().totalWinnings(fileContent)
     );
 
     @Getter
