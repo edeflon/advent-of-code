@@ -13,6 +13,7 @@ public class HauntedWasteland {
 
         Set<Node> nodes = this.extractNodes(fileContent);
 
+        // Find number of steps for each node ending by "A"
         Set<Node> travelNodes = nodes.stream()
                 .filter(node -> node.name.endsWith("A"))
                 .collect(Collectors.toSet());
@@ -31,11 +32,12 @@ public class HauntedWasteland {
             travelNode.steps = step;
         }
 
+        // Calculate least common multiple in list to find
         List<Long> steps = travelNodes.stream()
                 .map(Node::getSteps)
                 .toList();
-
         long lcm = this.lcmAll(steps);
+
         System.out.println(lcm);
     }
 
@@ -46,7 +48,7 @@ public class HauntedWasteland {
         for (String line : fileContent) {
             Matcher matcher = pattern.matcher(line);
             if (matcher.find()) {
-                nodes.add(new Node(matcher.group("name"), matcher.group("left"), matcher.group("right"), 0, new ArrayList<>()));
+                nodes.add(new Node(matcher.group("name"), matcher.group("left"), matcher.group("right"), 0));
             }
         }
         return nodes;
