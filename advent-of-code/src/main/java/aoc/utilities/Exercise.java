@@ -12,6 +12,7 @@ import aoc.year2023.day04.Scratchcards;
 import aoc.year2023.day06.WaitForIt;
 import aoc.year2023.day05.FertilizerSeed;
 import aoc.year2023.day07.CamelCards;
+import aoc.year2023.day08.HauntedWasteland;
 import lombok.Getter;
 
 import java.io.IOException;
@@ -72,6 +73,10 @@ public enum Exercise {
 
     CAMEL_CARDS("2023", "07", (fileContent, _isSecondPart) ->
             new CamelCards().totalWinnings(fileContent)
+    ),
+
+    HAUNTED_WASTELAND("2023", "08", (fileContent, _isSecondPart) ->
+            new HauntedWasteland().stepsRequiredToDestination(fileContent)
     );
 
     @Getter
