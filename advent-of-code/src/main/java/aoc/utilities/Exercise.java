@@ -13,6 +13,7 @@ import aoc.year2023.day06.WaitForIt;
 import aoc.year2023.day05.FertilizerSeed;
 import aoc.year2023.day07.CamelCards;
 import aoc.year2023.day08.HauntedWasteland;
+import aoc.year2023.day09.MirageMaintenance;
 import lombok.Getter;
 
 import java.io.IOException;
@@ -77,6 +78,10 @@ public enum Exercise {
 
     HAUNTED_WASTELAND("2023", "08", (fileContent, _isSecondPart) ->
             new HauntedWasteland().stepsRequiredToDestination(fileContent)
+    ),
+
+    MIRAGE_MAINTENANCE("2023", "09", (fileContent, isSecondPart) ->
+            new MirageMaintenance().sumOfExtrapolatedValues(fileContent, isSecondPart)
     );
 
     @Getter
