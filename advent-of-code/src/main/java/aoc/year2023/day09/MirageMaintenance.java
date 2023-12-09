@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 public class MirageMaintenance {
 
-    public void sumOfExtrapolatedValues(List<String> fileContent) {
+    public void sumOfExtrapolatedValues(List<String> fileContent, boolean isSecondPart) {
         List<List<Long>> values = this.extractValues(fileContent);
 
         long sum = 0;
@@ -24,7 +24,12 @@ public class MirageMaintenance {
                 step++;
             }
 
-            long history = this.calculateHistory(sequences);
+            long history;
+            if (isSecondPart) {
+                history = this.calculateBackwardHistory(sequences);
+            } else {
+                history = this.calculateHistory(sequences);
+            }
             sum += history;
         }
 
@@ -57,10 +62,18 @@ public class MirageMaintenance {
     }
 
     private Long calculateHistory(List<List<Long>> sequences) {
-        long sum = 0;
+        long history = 0;
         for (int i = sequences.size() - 2; i >= 0; i--) {
-            sum += sequences.get(i).get(sequences.get(i).size() - 1);
+            history += sequences.get(i).get(sequences.get(i).size() - 1);
         }
-        return sum;
+        return history;
+    }
+
+    private Long calculateBackwardHistory(List<List<Long>> sequences) {
+        long backwardHistory = 0;
+        for (int i = sequences.size() - 2; i >= 0; i--) {
+            backwardHistory = sequences.get(i).get(0) - backwardHistory;
+        }
+        return backwardHistory;
     }
 }

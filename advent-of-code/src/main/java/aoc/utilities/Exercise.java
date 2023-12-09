@@ -80,8 +80,8 @@ public enum Exercise {
             new HauntedWasteland().stepsRequiredToDestination(fileContent)
     ),
 
-    MIRAGE_MAINTENANCE("2023", "09", (fileContent, _isSecondPart) ->
-            new MirageMaintenance().sumOfExtrapolatedValues(fileContent)
+    MIRAGE_MAINTENANCE("2023", "09", (fileContent, isSecondPart) ->
+            new MirageMaintenance().sumOfExtrapolatedValues(fileContent, isSecondPart)
     );
 
     @Getter
