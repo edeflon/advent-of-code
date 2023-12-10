@@ -1,6 +1,5 @@
 package aoc.year2023.day10;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -11,8 +10,8 @@ public class PipeMaze {
     public void stepsToFarthestPoint(List<String> fileContent) {
         Set<Pipe> pipes = this.extractPipe(fileContent);
 
-        // PART 1
-        List<Pipe> loop = new ArrayList<>();
+        // PART 1 -> find loop and steps to farthest point
+        Set<Pipe> loop = new HashSet<>();
         Pipe currentPipe = pipes.stream()
                 .filter(pipe -> pipe.getPipeType().equals(PipeType.START))
                 .findFirst()
@@ -27,6 +26,13 @@ public class PipeMaze {
 
         int steps = loop.size() / 2;
         System.out.println(steps);
+
+        // PART 2 -> calculate how many tiles are enclosed
+        long nbTilesEnclosed = pipes.stream()
+                .filter(pipe -> pipe.isInLoop(loop))
+                .count();
+        // TODO : info : 189 too low, 362 too high
+        System.out.println(nbTilesEnclosed);
     }
 
     private Set<Pipe> extractPipe(List<String> fileContent) {
@@ -53,7 +59,7 @@ public class PipeMaze {
     }
 
     private boolean isAdjacent(Position a, Position b) {
-        return ((b.x() - 1 == a.x() || b.x() + 1 == a.x()) && b.y() == a.y())
-                || ((b.y() - 1 == a.y() || b.y() + 1 == a.y()) && b.x() == a.x());
+        return ((b.getX() - 1 == a.getX() || b.getX() + 1 == a.getX()) && b.getY() == a.getY())
+                || ((b.getY() - 1 == a.getY() || b.getY() + 1 == a.getY()) && b.getX() == a.getX());
     }
 }
