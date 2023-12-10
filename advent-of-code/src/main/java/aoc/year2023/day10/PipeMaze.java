@@ -31,7 +31,6 @@ public class PipeMaze {
         long nbTilesEnclosed = pipes.stream()
                 .filter(pipe -> pipe.isInLoop(loop))
                 .count();
-        // TODO : info : 189 too low, 362 too high
         System.out.println(nbTilesEnclosed);
     }
 
