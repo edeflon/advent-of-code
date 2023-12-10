@@ -14,6 +14,7 @@ import aoc.year2023.day05.FertilizerSeed;
 import aoc.year2023.day07.CamelCards;
 import aoc.year2023.day08.HauntedWasteland;
 import aoc.year2023.day09.MirageMaintenance;
+import aoc.year2023.day10.PipeMaze;
 import lombok.Getter;
 
 import java.io.IOException;
@@ -82,6 +83,10 @@ public enum Exercise {
 
     MIRAGE_MAINTENANCE("2023", "09", (fileContent, isSecondPart) ->
             new MirageMaintenance().sumOfExtrapolatedValues(fileContent, isSecondPart)
+    ),
+
+    PIPE_MAZE("2023", "10", (fileContent, _isSecondPart) ->
+            new PipeMaze().stepsToFarthestPoint(fileContent)
     );
 
     @Getter
