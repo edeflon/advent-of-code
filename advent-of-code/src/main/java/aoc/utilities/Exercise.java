@@ -15,6 +15,7 @@ import aoc.year2023.day07.CamelCards;
 import aoc.year2023.day08.HauntedWasteland;
 import aoc.year2023.day09.MirageMaintenance;
 import aoc.year2023.day10.PipeMaze;
+import aoc.year2023.day11.CosmicExpansion;
 import lombok.Getter;
 
 import java.io.IOException;
@@ -87,6 +88,10 @@ public enum Exercise {
 
     PIPE_MAZE("2023", "10", (fileContent, _isSecondPart) ->
             new PipeMaze().stepsToFarthestPoint(fileContent)
+    ),
+
+    COSMIC_EXPANSION("2023", "11", (fileContent, isSecondPart) ->
+            new CosmicExpansion().lengthSum(fileContent, isSecondPart)
     );
 
     @Getter
