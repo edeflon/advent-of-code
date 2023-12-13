@@ -17,6 +17,7 @@ import aoc.year2023.day09.MirageMaintenance;
 import aoc.year2023.day10.PipeMaze;
 import aoc.year2023.day11.CosmicExpansion;
 import aoc.year2023.day12.HotSprings;
+import aoc.year2023.day13.PointOfIncidence;
 import lombok.Getter;
 
 import java.io.IOException;
@@ -97,6 +98,10 @@ public enum Exercise {
 
     HOT_SPRINGS("2023", "12", (fileContent, _isSecondPart) ->
             new HotSprings().sumOfCounts(fileContent)
+    ),
+
+    POINT_OF_INCIDENCE("2023", "13", (fileContent, _isSecondPart) ->
+            new PointOfIncidence().numberOfSummarizedNotes(fileContent)
     );
 
     @Getter
