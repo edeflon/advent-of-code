@@ -16,6 +16,7 @@ import aoc.year2023.day08.HauntedWasteland;
 import aoc.year2023.day09.MirageMaintenance;
 import aoc.year2023.day10.PipeMaze;
 import aoc.year2023.day11.CosmicExpansion;
+import aoc.year2023.day12.HotSprings;
 import lombok.Getter;
 
 import java.io.IOException;
@@ -92,6 +93,10 @@ public enum Exercise {
 
     COSMIC_EXPANSION("2023", "11", (fileContent, isSecondPart) ->
             new CosmicExpansion().lengthSum(fileContent, isSecondPart)
+    ),
+
+    HOT_SPRINGS("2023", "12", (fileContent, _isSecondPart) ->
+            new HotSprings().sumOfCounts(fileContent)
     );
 
     @Getter
