@@ -2,6 +2,7 @@ package aoc.year2023.day13;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class PointOfIncidence {
 
@@ -12,13 +13,15 @@ public class PointOfIncidence {
         int columns = 0;
 
         for (SoilPattern soilPattern : soilPatterns) {
-            int localRows = soilPattern.findHorizontalReflexionLine();
-            if (localRows < soilPattern.patterns.size()) {
-                rows += localRows;
+            Optional<Integer> localRows = this.findAlternativeHorizontalReflexionLine(soilPattern);
+            if (localRows.isPresent()) {
+                rows += localRows.get();
                 continue;
             }
-            int localColumns = soilPattern.findVerticalReflexionLine();
-            columns += localColumns;
+            Optional<Integer> localColumns = this.findAlternativeVerticalReflexionLine(soilPattern);
+            if (localColumns.isPresent()) {
+                columns += localColumns.get();
+            }
         }
 
         int numberOfNotes = 100 * rows + columns;
@@ -42,5 +45,43 @@ public class PointOfIncidence {
         soilPatterns.add(soilPattern);
 
         return soilPatterns;
+    }
+
+    private Optional<Integer> findAlternativeHorizontalReflexionLine(SoilPattern pattern) {
+        int rows = pattern.findHorizontalReflexionLine();
+
+//        Optional<Integer> alternativeRows = Optional.empty(); // Part 1
+        List<SoilPattern> alternatives = pattern.generateAlternatives();
+        int finalRows = rows;
+        Optional<Integer> alternativeRows = alternatives.stream()
+                .map(SoilPattern::findHorizontalReflexionLine)
+                .filter(result -> result < pattern.patterns.size() && result != finalRows)
+                .min(Integer::compareTo);
+
+        rows = alternativeRows.orElse(rows);
+        if (rows >= pattern.patterns.size()) {
+            return Optional.empty();
+        }
+
+        return Optional.of(rows);
+    }
+
+    private Optional<Integer> findAlternativeVerticalReflexionLine(SoilPattern pattern) {
+        int columns = pattern.findVerticalReflexionLine();
+
+//        Optional<Integer> alternativeColumns = Optional.empty();
+        List<SoilPattern> alternatives = pattern.generateAlternatives();
+        int finalColumns = columns;
+        Optional<Integer> alternativeColumns = alternatives.stream()
+                .map(SoilPattern::findVerticalReflexionLine)
+                .filter(result -> result < pattern.patterns.get(0).length() && result != finalColumns)
+                .min(Integer::compareTo);
+
+        columns = alternativeColumns.orElse(columns);
+        if (columns >= pattern.patterns.get(0).length()) {
+            return Optional.empty();
+        }
+
+        return Optional.of(columns);
     }
 }

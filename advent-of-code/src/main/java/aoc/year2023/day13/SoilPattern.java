@@ -28,7 +28,6 @@ public class SoilPattern {
             }
         }
 
-        alternativePatterns.add(this);
         return alternativePatterns;
     }
 
