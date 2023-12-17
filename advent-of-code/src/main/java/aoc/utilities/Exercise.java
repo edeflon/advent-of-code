@@ -17,6 +17,7 @@ import aoc.year2023.day09.MirageMaintenance;
 import aoc.year2023.day10.PipeMaze;
 import aoc.year2023.day11.CosmicExpansion;
 import aoc.year2023.day14.ParabolicReflectorDish;
+import aoc.year2023.day15.LensLibrary;
 import lombok.Getter;
 
 import java.io.IOException;
@@ -97,6 +98,10 @@ public enum Exercise {
 
     PARABOLIC_REFLECTOR_DISH("2023", "14", (fileContent, _isSecondPart) ->
             new ParabolicReflectorDish().totalLoadOnNorth(fileContent)
+    ),
+
+    LENS_LIBRARY("2023", "15", (fileContent, _isSecondPart) ->
+            new LensLibrary().sumOfResults(fileContent)
     );
 
     @Getter
