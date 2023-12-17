@@ -13,58 +13,55 @@ public class ConditionRecord {
     List<Integer> duplicatedInformations;
 
     public long countPossibilities() {
-        List<List<RecordType>> possibilities = new ArrayList<>();
 
-        List<RecordType> possibility;
-        do {
-            possibility = this.buildNewPossibility(possibilities);
-            if (!possibility.isEmpty()) {
-                possibilities.add(possibility);
-            }
-        } while (!possibility.isEmpty());
+        // Find damaged groups and unknowns size and index
+        List<RecordGroup> damagedGroups = this.findRecordGroups(RecordType.DAMAGED);
+//        List<RecordGroup> unknownGroups = this.findRecordGroups(RecordType.UNKNOWN);
 
-        return possibilities.size();
+        // Reconstruct matching damaged groups with duplicatedInformations
+        List<Integer> checkedInformations = this.findInformationsAvailableInGroups(damagedGroups);
+
+        // Count remaining possible positions in
+        return 0L;
     }
 
-    private List<RecordType> buildNewPossibility(List<List<RecordType>> possibilities) {
-        List<RecordType> possibility = new ArrayList<>(this.conditionRecords);
+    private List<RecordGroup> findRecordGroups(RecordType type) {
+        List<RecordGroup> recordGroups = new ArrayList<>();
 
-        int duplicateIndex = 0;
-        int damagedCount = 0;
-        for (int i = 0; i < possibility.size(); i++) {
-            RecordType recordType = possibility.get(i);
-            switch (recordType) {
-                case DAMAGED -> damagedCount++;
-                case OPERATIONAL -> {
-                    if (damagedCount == this.duplicatedInformations.get(duplicateIndex)) {
-                        damagedCount = 0;
-                        duplicateIndex++;
-                    } else {
-                        possibility.set(i - damagedCount, RecordType.OPERATIONAL);
-                        damagedCount--;
-                    }
+        int count = 0;
+        RecordGroup recordGroup = new RecordGroup();
+        for (int i = 0; i < this.conditionRecords.size(); i++) {
+            if (this.conditionRecords.get(i) == type) {
+                count++;
+                if (recordGroup.getStartIndex() == null) {
+                    recordGroup.setStartIndex(i);
                 }
-                case UNKNOWN -> {
-                    if (damagedCount == this.duplicatedInformations.get(duplicateIndex)) {
-                        damagedCount = 0;
-                        possibility.set(i, RecordType.OPERATIONAL);
-                        duplicateIndex++;
-                    } else {
-                        possibility.set(i, RecordType.DAMAGED);
-                        damagedCount++;
-                    }
-                }
-            }
-
-            if (possibilities.contains(possibility)) {
-                throw new IllegalArgumentException("AAAAAAAAAAAAAAAHHHHHHH");
-            }
-
-            if (duplicateIndex == this.duplicatedInformations.size()) {
-                break;
+            } else if (count > 0) {
+                recordGroup.setType(type);
+                recordGroup.setSize(count);
+                recordGroups.add(recordGroup);
+                recordGroup = new RecordGroup();
+                count = 0;
             }
         }
 
-        return possibility;
+        if (count > 0) {
+            recordGroup.setType(type);
+            recordGroup.setSize(count);
+            recordGroups.add(recordGroup);
+        }
+
+        return recordGroups;
+    }
+
+    private List<Integer> findInformationsAvailableInGroups(List<RecordGroup> damagedGroups, List<RecordGroup> unknownGroups) {
+        for (RecordGroup group : damagedGroups) {
+            // Check if possible to match a duplicateInfo
+
+            // If yes -> mark duplicateInfo as checked
+            // TODO : check if possible to put
+
+            // If no -> try to complete with unknown
+        }
     }
 }
