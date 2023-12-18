@@ -18,6 +18,7 @@ import aoc.year2023.day10.PipeMaze;
 import aoc.year2023.day11.CosmicExpansion;
 import aoc.year2023.day14.ParabolicReflectorDish;
 import aoc.year2023.day15.LensLibrary;
+import aoc.year2023.day16.FloorWillBeLava;
 import lombok.Getter;
 
 import java.io.IOException;
@@ -102,6 +103,10 @@ public enum Exercise {
 
     LENS_LIBRARY("2023", "15", (fileContent, _isSecondPart) ->
             new LensLibrary().sumOfResults(fileContent)
+    ),
+
+    FLOOR_WILL_BE_LAVA("2023", "16", (fileContent, _isSecondPart) ->
+            new FloorWillBeLava().countTilesEnergized(fileContent)
     );
 
     @Getter
