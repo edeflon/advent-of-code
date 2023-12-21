@@ -2,8 +2,12 @@ package aoc.year2023.day16;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class FloorWillBeLava {
+
+    private int maxX;
+    private int maxY;
 
     private record Beam(Position position, Orientation orientation) {
     }
@@ -12,27 +16,80 @@ public class FloorWillBeLava {
     }
 
     public void countTilesEnergized(List<String> fileContent) {
+        this.maxX = fileContent.get(0).length();
+        this.maxY = fileContent.size();
+
         Set<Tile> tiles = this.extractTiles(fileContent);
 
-        // TODO : move beams -> return set of position energized by beam
         Set<Beam> beams = new HashSet<>();
-        beams.add(new Beam(new Position(0, 0), Orientation.D));
+        beams.add(new Beam(new Position(0, 0), Orientation.RIGHT));
         Set<Position> energizedPositions = new HashSet<>(Collections.singleton(new Position(0, 0)));
 
         while (!beams.isEmpty()) {
-            beams = beams.stream()
-                    .map(beam -> this.nextBeams(beam, tiles))
-                    .flatMap(Set::stream)
-                    .collect(Collectors.toSet());
-            energizedPositions.addAll(
-                    beams.stream()
-                            .map(Beam::position)
-                            .collect(Collectors.toSet())
-            );
+            Set<Beam> nextBeams = new HashSet<>();
+            for (Beam beam : beams) {
+                Set<Beam> currentBeams = this.nextBeams(beam, tiles);
+                energizedPositions.addAll(this.extractEnergizedPositions(beam, nextBeams));
+                nextBeams.addAll(
+                        currentBeams.stream()
+                                .filter(next -> !energizedPositions.contains(next.position()))
+                                .collect(Collectors.toSet())
+                );
+            }
+            beams = new HashSet<>(nextBeams);
+        }
+
+        for (int y = 0; y < maxY; y++) {
+            for (int x = 0; x < maxX; x++) {
+                if (energizedPositions.contains(new Position(x, y))) {
+                    System.out.print("#");
+                } else {
+                    System.out.print(".");
+                }
+            }
+            System.out.println();
         }
 
         // TODO : count positions
         System.out.println(energizedPositions.size());
+    }
+
+    private Set<Position> extractEnergizedPositions(Beam beam, Set<Beam> nextBeams) {
+        Set<Position> energizedPositions = new HashSet<>();
+        for (Beam next : nextBeams) {
+            if (beam.position() == next.position()) {
+                energizedPositions.add(next.position());
+            } else if (beam.position().x() == next.position().x()) {
+                int x = beam.position().x();
+                int start = 0;
+                int end = 0;
+                if (beam.position().y() > next.position().y()) {
+                    start = next.position.y();
+                    end = beam.position.y();
+                } else {
+                    start = beam.position.y();
+                    end = next.position.y();
+                }
+                energizedPositions.addAll(IntStream.rangeClosed(start, end)
+                        .mapToObj(y -> new Position(x, y))
+                        .collect(Collectors.toSet()));
+            } else if (beam.position().y() == next.position().y()) {
+                int y = beam.position().y();
+                int start = 0;
+                int end = 0;
+                if (beam.position().x() > next.position().x()) {
+                    start = next.position.x();
+                    end = beam.position.x();
+                } else {
+                    start = beam.position.x();
+                    end = next.position.x();
+                }
+                energizedPositions.addAll(IntStream.rangeClosed(start, end)
+                        .mapToObj(x -> new Position(x, y))
+                        .collect(Collectors.toSet()));
+            }
+        }
+        return energizedPositions;
     }
 
     private Set<Tile> extractTiles(List<String> fileContent) {
@@ -59,141 +116,82 @@ public class FloorWillBeLava {
     }
 
     private Set<Beam> nextBeams(Beam beam, Set<Tile> tiles) {
-        Optional<Tile> optElement = switch (beam.orientation) {
-            case U -> tiles.stream()
+        Set<Beam> nextBeams = new HashSet<>();
+        if (beam.orientation().equals(Orientation.UP)) {
+            tiles.stream()
                     .filter(tile -> tile.position().y() < beam.position().y() && tile.position().x() == beam.position().x())
-                    .max(Comparator.comparing(tile -> tile.position().y()));
-            case D -> tiles.stream()
+                    .max(Comparator.comparing(tile -> tile.position().y()))
+                    .ifPresentOrElse(tile -> this.getOrientationsBySymbol(tile.element().getCharacter(), beam.orientation())
+                                    .forEach(orientation -> nextBeams.add(new Beam(tile.position(), orientation))),
+                            () -> nextBeams.add(new Beam(new Position(beam.position().x(), 0), beam.orientation())));
+        }
+        if (beam.orientation().equals(Orientation.DOWN)) {
+            tiles.stream()
                     .filter(tile -> tile.position().y() > beam.position().y() && tile.position().x() == beam.position().x())
-                    .min(Comparator.comparing(tile -> tile.position().y()));
-            case L -> tiles.stream()
+                    .min(Comparator.comparing(tile -> tile.position().y()))
+                    .ifPresentOrElse(tile -> this.getOrientationsBySymbol(tile.element().getCharacter(), beam.orientation())
+                                    .forEach(orientation -> nextBeams.add(new Beam(tile.position(), orientation))),
+                            () -> nextBeams.add(new Beam(new Position(beam.position().x(), maxY), beam.orientation())));
+        }
+        if (beam.orientation().equals(Orientation.LEFT)) {
+            tiles.stream()
                     .filter(tile -> tile.position().y() == beam.position().y() && tile.position().x() < beam.position().x())
-                    .max(Comparator.comparing(tile -> tile.position().x()));
-            case R -> tiles.stream()
+                    .max(Comparator.comparing(tile -> tile.position().x()))
+                    .ifPresentOrElse(tile -> this.getOrientationsBySymbol(tile.element().getCharacter(), beam.orientation())
+                                    .forEach(orientation -> nextBeams.add(new Beam(tile.position(), orientation))),
+                            () -> nextBeams.add(new Beam(new Position(0, beam.position().y()), beam.orientation())));
+        }
+        if (beam.orientation().equals(Orientation.RIGHT)) {
+            tiles.stream()
                     .filter(tile -> tile.position().y() == beam.position().y() && tile.position().x() > beam.position().x())
-                    .min(Comparator.comparing(tile -> tile.position().x()));
-        };
-
-        if (optElement.isEmpty()) {
-            return Collections.emptySet();
+                    .min(Comparator.comparing(tile -> tile.position().x()))
+                    .ifPresentOrElse(tile -> this.getOrientationsBySymbol(tile.element().getCharacter(), beam.orientation())
+                                    .forEach(orientation -> nextBeams.add(new Beam(tile.position(), orientation))),
+                            () -> nextBeams.add(new Beam(new Position(maxX, beam.position().y()), beam.orientation())));
         }
 
-        return this.getNextBeams(beam.orientation(), optElement.get(), tiles);
+        return nextBeams;
     }
 
-    private Set<Beam> getNextBeams(Orientation orientation, Tile tile, Set<Tile> tiles) {
-        return switch (tile.element()) {
+    private Set<Orientation> getOrientationsBySymbol(String symbol, Orientation orientation) {
+        return switch (ContraptionElement.getByCharacter(symbol)) {
             case MIRROR_ANTI -> {
-                yield switch (orientation) {
-                    case U -> tiles.stream()
-                            .filter(t -> t.position().x() - 1 == tile.position().x() && t.position().y() == tile.position().y())
-                            .map(t -> new Beam(t.position(), Orientation.L))
-                            .collect(Collectors.toSet());
-                    case D -> tiles.stream()
-                            .filter(t -> t.position().x() + 1 == tile.position().x() && t.position().y() == tile.position().y())
-                            .map(t -> new Beam(t.position(), Orientation.R))
-                            .collect(Collectors.toSet());
-                    case L -> tiles.stream()
-                            .filter(t -> t.position().x() == tile.position().x() && t.position().y() + 1 == tile.position().y())
-                            .map(t -> new Beam(t.position(), Orientation.D))
-                            .collect(Collectors.toSet());
-                    case R -> tiles.stream()
-                            .filter(t -> t.position().x() == tile.position().x() && t.position().y() - 1 == tile.position().y())
-                            .map(t -> new Beam(t.position(), Orientation.U))
-                            .collect(Collectors.toSet());
-                };
+                if (orientation == Orientation.UP) {
+                    yield Set.of(Orientation.LEFT);
+                } else if (orientation == Orientation.DOWN) {
+                    yield Set.of(Orientation.RIGHT);
+                } else if (orientation == Orientation.LEFT) {
+                    yield Set.of(Orientation.UP);
+                } else if (orientation == Orientation.RIGHT) {
+                    yield Set.of(Orientation.DOWN);
+                }
+                throw new IllegalArgumentException();
             }
             case MIRROR_SLASH -> {
-                yield switch (orientation) {
-                    case U -> tiles.stream()
-                            .filter(t -> t.position().x() + 1 == tile.position().x() && t.position().y() == tile.position().y())
-                            .map(t -> new Beam(t.position(), Orientation.R))
-                            .collect(Collectors.toSet());
-                    case D -> tiles.stream()
-                            .filter(t -> t.position().x() - 1 == tile.position().x() && t.position().y() == tile.position().y())
-                            .map(t -> new Beam(t.position(), Orientation.L))
-                            .collect(Collectors.toSet());
-                    case L -> tiles.stream()
-                            .filter(t -> t.position().x() == tile.position().x() && t.position().y() - 1 == tile.position().y())
-                            .map(t -> new Beam(t.position(), Orientation.U))
-                            .collect(Collectors.toSet());
-                    case R -> tiles.stream()
-                            .filter(t -> t.position().x() == tile.position().x() && t.position().y() + 1 == tile.position().y())
-                            .map(t -> new Beam(t.position(), Orientation.D))
-                            .collect(Collectors.toSet());
-                };
+                if (orientation == Orientation.UP) {
+                    yield Set.of(Orientation.RIGHT);
+                } else if (orientation == Orientation.DOWN) {
+                    yield Set.of(Orientation.LEFT);
+                } else if (orientation == Orientation.LEFT) {
+                    yield Set.of(Orientation.DOWN);
+                } else if (orientation == Orientation.RIGHT) {
+                    yield Set.of(Orientation.UP);
+                }
+                throw new IllegalArgumentException();
             }
             case SPLITTER_H -> {
-                yield switch (orientation) {
-                    case U -> {
-                        Set<Beam> leftBeams = tiles.stream()
-                                .filter(t -> t.position().x() - 1 == tile.position().x() && t.position().y() == tile.position().y())
-                                .map(t -> new Beam(t.position(), Orientation.L))
-                                .collect(Collectors.toSet());
-                        Set<Beam> rightBeams = tiles.stream()
-                                .filter(t -> t.position().x() + 1 == tile.position().x() && t.position().y() == tile.position().y())
-                                .map(t -> new Beam(t.position(), Orientation.R))
-                                .collect(Collectors.toSet());
-                        leftBeams.addAll(rightBeams);
-                        yield leftBeams;
-                    }
-                    case D -> {
-                        Set<Beam> leftBeams = tiles.stream()
-                                .filter(t -> t.position().x() - 1 == tile.position().x() && t.position().y() == tile.position().y())
-                                .map(t -> new Beam(t.position(), Orientation.L))
-                                .collect(Collectors.toSet());
-                        Set<Beam> rightBeams = tiles.stream()
-                                .filter(t -> t.position().x() + 1 == tile.position().x() && t.position().y() == tile.position().y())
-                                .map(t -> new Beam(t.position(), Orientation.R))
-                                .collect(Collectors.toSet());
-                        leftBeams.addAll(rightBeams);
-                        yield leftBeams;
-                    }
-                    case L -> tiles.stream()
-                            .filter(t -> t.position().x() + 1 == tile.position().x() && t.position().y() == tile.position().y())
-                            .map(t -> new Beam(t.position(), Orientation.L))
-                            .collect(Collectors.toSet());
-                    case R -> tiles.stream()
-                            .filter(t -> t.position().x() - 1 == tile.position().x() && t.position().y() == tile.position().y())
-                            .map(t -> new Beam(t.position(), Orientation.R))
-                            .collect(Collectors.toSet());
-                };
+                if (orientation == Orientation.LEFT || orientation == Orientation.RIGHT) {
+                    yield Set.of(orientation);
+                } else {
+                    yield Set.of(Orientation.LEFT, Orientation.RIGHT);
+                }
             }
             case SPLITTER_V -> {
-                yield switch (orientation) {
-                    case U -> tiles.stream()
-                            .filter(t -> t.position().x() == tile.position().x() && t.position().y() - 1 == tile.position().y())
-                            .map(t -> new Beam(t.position(), Orientation.U))
-                            .collect(Collectors.toSet());
-                    case D -> tiles.stream()
-                            .filter(t -> t.position().x() == tile.position().x() && t.position().y() + 1 == tile.position().y())
-                            .map(t -> new Beam(t.position(), Orientation.D))
-                            .collect(Collectors.toSet());
-                    case R -> {
-                        Set<Beam> upBeams = tiles.stream()
-                                .filter(t -> t.position().x() == tile.position().x() && t.position().y() - 1 == tile.position().y())
-                                .map(t -> new Beam(t.position(), Orientation.U))
-                                .collect(Collectors.toSet());
-                        Set<Beam> downBeams = tiles.stream()
-                                .filter(t -> t.position().x() == tile.position().x() && t.position().y() + 1 == tile.position().y())
-                                .map(t -> new Beam(t.position(), Orientation.D))
-                                .collect(Collectors.toSet());
-                        upBeams.addAll(downBeams);
-                        yield upBeams;
-                    }
-                    case L -> {
-                        Set<Beam> upBeams = tiles.stream()
-                                .filter(t -> t.position().x() == tile.position().x() && t.position().y() - 1 == tile.position().y())
-                                .map(t -> new Beam(t.position(), Orientation.U))
-                                .collect(Collectors.toSet());
-                        Set<Beam> downBeams = tiles.stream()
-                                .filter(t -> t.position().x() == tile.position().x() && t.position().y() + 1 == tile.position().y())
-                                .map(t -> new Beam(t.position(), Orientation.D))
-                                .collect(Collectors.toSet());
-                        upBeams.addAll(downBeams);
-                        yield upBeams;
-                    }
-                };
+                if (orientation == Orientation.UP || orientation == Orientation.DOWN) {
+                    yield Set.of(orientation);
+                } else {
+                    yield Set.of(Orientation.UP, Orientation.DOWN);
+                }
             }
         };
     }
