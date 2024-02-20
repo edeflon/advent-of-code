@@ -3,6 +3,7 @@ package aoc.year2016.day07;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -34,16 +35,9 @@ public class InternetProtocolVersion7 {
     }
 
     private boolean atLeastOneSequencesHasABBA(String line, Pattern ipv7Pattern) {
-        Matcher matcher = ipv7Pattern.matcher(line);
-
-        while (matcher.find()) {
-            String sequence = matcher.group();
-            if (this.hasABBA(sequence, 0)) {
-                return true;
-            }
-        }
-
-        return false;
+        return ipv7Pattern.matcher(line).results()
+                .map(MatchResult::group)
+                .anyMatch(sequence -> hasABBA(sequence, 0));
     }
 
     private boolean hasABBA(String sequence, int start) {
