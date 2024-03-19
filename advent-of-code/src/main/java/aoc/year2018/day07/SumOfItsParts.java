@@ -9,7 +9,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 @Slf4j
 public class SumOfItsParts {
@@ -18,61 +17,24 @@ public class SumOfItsParts {
         // Get all steps from file content
         Set<Step> steps = this.extractSteps(fileContent);
 
-        // Find all available steps to begin treatment
-        List<Step> availableSteps = new ArrayList<>(
-                this.findFirstsSteps(steps)
-                        .stream()
-                        .map(stepId -> new Step(stepId, new ArrayList<>(), Status.READY))
-                        .toList()
-        );
-
-        // Select the first one to do (by alphabetical order) and set its status to completed
-        Step first = availableSteps.stream()
-                .sorted()
-                .findFirst()
-                .orElseThrow();
-        first.setStatus(Status.COMPLETED);
-        steps.addAll(availableSteps);
-
-        String id = first.getId();
         boolean completed = false;
-        StringBuilder order = new StringBuilder(id);
+        StringBuilder order = new StringBuilder();
 
-        // While all the steps are not completed
         while (!completed) {
-            String finalId = id;
-
-            // Remove completed steps from available steps
-            availableSteps.removeAll(
-                    steps.stream()
-                            .filter(step -> step.getStatus().equals(Status.COMPLETED))
-                            .toList()
-            );
-
-            // Add all steps available after previous step was completed
-            availableSteps.addAll(
-                    steps.stream()
-                            .filter(step -> step.getPreviousIds().contains(finalId) && step.getStatus().equals(Status.READY))
-                            .toList()
-            );
-
-            // Select the next step to complete (by alphabetical order) and complete it
-            Step nextStep = availableSteps.stream()
-                    .filter(step -> step.isAllPreviousCompleted(steps))
+            // Find next available step
+            Optional<Step> optionalStep = steps.stream()
+                    .filter(Step::isAvailable)
                     .sorted()
-                    .findFirst()
-                    .orElseThrow();
-            nextStep.setStatus(Status.COMPLETED);
+                    .findFirst();
 
-            id = nextStep.getId();
-            order.append(id);
-
-            // Verify if all the steps are completed
-            completed = steps.stream()
-                    .map(Step::getStatus)
-                    .filter(status -> status == Status.READY)
-                    .collect(Collectors.toSet())
-                    .isEmpty();
+            // If a step is available : complete it and add its id to the final order, else we're done
+            if (optionalStep.isPresent()) {
+                Step nextStep = optionalStep.get();
+                nextStep.setCompleted(true);
+                order.append(nextStep.getId());
+            } else {
+                completed = true;
+            }
         }
 
         log.info("The steps in your instructions should be completed in this order : {}", order);
@@ -93,42 +55,34 @@ public class SumOfItsParts {
             if (matcher.find()) {
                 String id = matcher.group("id");
                 String previousId = matcher.group("previousId");
-                Optional<Step> optionalStep = steps.stream()
-                        .filter(step -> step.getId().equals(id))
+
+                // Treat previous step first
+                Optional<Step> optionalPreviousStep = steps.stream()
+                        .filter(step -> step.getId().equals(previousId))
                         .findFirst();
 
-                optionalStep.ifPresentOrElse(
-                        step -> step.getPreviousIds().add(previousId),
-                        () -> steps.add(new Step(id, new ArrayList<>(List.of(previousId)), Status.READY))
-                );
+                // If previous step does not exist : create it and add it to step set
+                Step previousStep;
+                if (optionalPreviousStep.isEmpty()) {
+                    previousStep = new Step(previousId, new ArrayList<>(), false);
+                    steps.add(previousStep);
+                } else {
+                    previousStep = optionalPreviousStep.get();
+                }
+
+                // Verify if current step exist
+                steps.stream()
+                        .filter(step -> step.getId().equals(id))
+                        .findFirst()
+                        .ifPresentOrElse(
+                                // If it's present, we had previous step to its previous steps list
+                                step -> step.getPreviousSteps().add(previousStep),
+                                // If not, we create it, with only previous step in its previous steps list
+                                () -> steps.add(new Step(id, new ArrayList<>(List.of(previousStep)), false))
+                        );
             }
         }
 
         return steps;
-    }
-
-    /**
-     * Find available steps in given step set
-     *
-     * @param steps Set of sets
-     * @return List of step ids available to run
-     */
-    private List<String> findFirstsSteps(Set<Step> steps) {
-        Set<String> allPreviousIds = steps.stream()
-                .map(Step::getPreviousIds)
-                .flatMap(List::stream)
-                .collect(Collectors.toSet());
-
-        List<String> firstsSteps = new ArrayList<>();
-        for (String previousId : allPreviousIds) {
-            Optional<Step> optionalFirstStep = steps.stream()
-                    .filter(step -> step.getId().equals(previousId))
-                    .findFirst();
-            if (optionalFirstStep.isEmpty()) {
-                firstsSteps.add(previousId);
-            }
-        }
-
-        return firstsSteps;
     }
 }

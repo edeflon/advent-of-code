@@ -5,26 +5,33 @@ import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
 @Data
 @AllArgsConstructor
 public class Step implements Comparable<Step> {
     private String id;
-    private List<String> previousIds;
-    private Status status;
+    private List<Step> previousSteps;
+    private boolean completed;
 
-    public boolean isAllPreviousCompleted(Set<Step> steps) {
-        for (String prevId: previousIds) {
-            Optional<Step> step = steps.stream()
-                    .filter(s -> s.getId().equals(prevId))
-                    .findFirst();
-            if (step.isPresent() && step.get().getStatus().equals(Status.READY)) {
-                return false;
-            }
-        }
-        return true;
+    /**
+     * Verify if step is available to run
+     *
+     * @return Status if step is available to run
+     */
+    public boolean isAvailable() {
+        return (previousSteps.isEmpty() || isAllPreviousCompleted()) && !completed;
+    }
+
+    /**
+     * Verify if all previous steps are completed
+     *
+     * @return Status if all previous steps are completed
+     */
+    public boolean isAllPreviousCompleted() {
+        return previousSteps.stream()
+                .filter(prevStep -> !prevStep.isCompleted())
+                .toList()
+                .isEmpty();
     }
 
     @Override
