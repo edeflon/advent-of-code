@@ -6,6 +6,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Slf4j
@@ -18,8 +19,8 @@ public class TuningTrouble {
      * @param isSecondPart Check if we're testing first or second part of exercise
      * @throws IOException Exception thrown when an error is catch while reading the file
      */
-    public void countCharactersBeforeStartOfPacket(String filename, boolean isSecondPart) throws IOException {
-        String datastream = this.convertFileDataToString(filename);
+    public void countCharactersBeforeStartOfPacket(List<String> fileContent, boolean isSecondPart) throws IOException {
+        String datastream = fileContent.get(0);
 
         int markerSize = isSecondPart ? 14 : 4;
 

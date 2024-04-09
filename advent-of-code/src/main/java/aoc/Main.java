@@ -2,6 +2,7 @@ package aoc;
 
 import aoc.utilities.Exercise;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -20,7 +21,11 @@ public class Main {
 
         if (null != exercise) {
             // Execute function linked to the exercise we found
-            exercise.executeExerciseFunction(isTest, isSecondPart);
+            try {
+                exercise.executeExerciseFunction(isTest, isSecondPart);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         } else {
             throw new IllegalArgumentException("No program found for the given date");
         }
@@ -30,7 +35,7 @@ public class Main {
      * Retrieve exercise linked to given date
      *
      * @param year : year of the exercise
-     * @param day : day of the exercise
+     * @param day  : day of the exercise
      * @return exercise associated to the year and date
      */
     public static Exercise findEnumByDate(String year, String day) {

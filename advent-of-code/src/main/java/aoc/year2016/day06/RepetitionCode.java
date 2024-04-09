@@ -1,42 +1,37 @@
 package aoc.year2016.day06;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.*;
+import lombok.extern.slf4j.Slf4j;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@Slf4j
 public class RepetitionCode {
-
-    private static final Logger LOGGER = Logger.getLogger(RepetitionCode.class.getPackage().getName());
 
     /**
      * Retrieve message from list with 2 different methods: by finding the most recurring character then the least
      * recurring one.
      *
-     * @param filename : name of the file where data is stored
-     * @throws IOException : exception to throw when an error is catch while reading a file
+     * @param messages     Messages received
+     * @param isSecondPart Defines if we're testing first or second part of exercise
      */
-    public void recoverMessages(String filename) throws IOException {
-        // Convert data input in String array
-        List<String> messages = this.convertFileDataToArray(filename);
-
-        // If no message are found, we stop the function
+    public void recoverMessages(List<String> messages, boolean isSecondPart) {
+        // If there is no message, we stop the function
         if (messages.isEmpty()) {
             return;
         }
 
-        boolean isMostCommon = true;
-        // Part 1 : retrieve message with the most recurring characters
-        String messageMostCommon = this.recoverMessage(messages, isMostCommon);
-        // Part 2 : retrieve message with the least recurring characters
-        isMostCommon = false; // We're looking for the least recurring characters
-        String messageLeastCommon = this.recoverMessage(messages, isMostCommon);
-
-        // Displaying the results of both methods
-        LOGGER.log(Level.INFO, "Most common characters: \"{0}\"", messageMostCommon);
-        LOGGER.log(Level.INFO, "Least common characters: \"{0}\"", messageLeastCommon);
+        if (isSecondPart) {
+            // Retrieve message with the least recurring characters
+            String messageLeastCommon = this.recoverMessage(messages, false);
+            log.info("Least common characters: \"{}\"", messageLeastCommon);
+        } else {
+            // Retrieve message with the most recurring characters
+            String messageMostCommon = this.recoverMessage(messages, true);
+            log.info("Most common characters: \"{}\"", messageMostCommon);
+        }
     }
 
     /**
@@ -66,22 +61,5 @@ public class RepetitionCode {
 
         // Return corrected message
         return stringBuilder.toString();
-    }
-
-    /**
-     * Convert given file data in string array.
-     *
-     * @param filename : name of the file where data is stored
-     * @throws IOException : exception to throw when an error is catch while reading a file
-     */
-    private List<String> convertFileDataToArray(String filename) throws IOException {
-        List<String> messages = new ArrayList<>();
-        try (BufferedReader bf = new BufferedReader(new FileReader("src/main/resources/inputs/" + filename))) {
-            String line;
-            while ((line = bf.readLine()) != null) {
-                messages.add(line);
-            }
-            return messages;
-        }
     }
 }

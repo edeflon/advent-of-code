@@ -1,8 +1,5 @@
 package aoc.year2018.day06;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,12 +16,11 @@ public class ChronalCoordinates {
     /**
      * Find the largest area size around a given coordinate
      *
-     * @param filename Name of the file containing the data
-     * @throws IOException Exception thrown when an error is catch while reading the file
+     * @param fileContent Content of the file to process
      */
-    public void findLargestAreaSize(String filename) throws IOException {
-        // Convert data input to Coordinates set
-        Set<Coordinate> coordinates = this.convertFileDataToSet(filename);
+    public void findLargestAreaSize(List<String> fileContent) {
+        // Convert file content to Coordinates set
+        Set<Coordinate> coordinates = this.convertFileContentToSet(fileContent);
 
         // Find the lowest and highest coordinates
         Coordinate minCoordinate = initMinCoordinate(coordinates);
@@ -135,27 +131,22 @@ public class ChronalCoordinates {
     }
 
     /**
-     * Convert data of given file in a set of coordinates
+     * Convert content file to a set of coordinates
      *
-     * @param filename Name of the file containing the data
+     * @param fileContent File content to convert
      * @return Set of the coordinates extracted of the file
-     * @throws IOException Exception thrown when an error is catch while reading the file
      */
-    private Set<Coordinate> convertFileDataToSet(String filename) throws IOException {
-        try (BufferedReader bf = new BufferedReader(new FileReader("src/main/resources/inputs/" + filename))) {
-            Set<Coordinate> coordinates = new HashSet<>();
-            String line;
-            while ((line = bf.readLine()) != null) {
-                Pattern pattern = Pattern.compile("(?<x>\\d+), (?<y>\\d+)");
-                Matcher matcher = pattern.matcher(line);
-                if(matcher.find()) {
-                    int x = Integer.parseInt(matcher.group("x"));
-                    int y = Integer.parseInt(matcher.group("y"));
-                    coordinates.add(new Coordinate(x, y));
-                }
-
+    private Set<Coordinate> convertFileContentToSet(List<String> fileContent) {
+        Set<Coordinate> coordinates = new HashSet<>();
+        for (String content : fileContent) {
+            Pattern pattern = Pattern.compile("(?<x>\\d+), (?<y>\\d+)");
+            Matcher matcher = pattern.matcher(content);
+            if (matcher.find()) {
+                int x = Integer.parseInt(matcher.group("x"));
+                int y = Integer.parseInt(matcher.group("y"));
+                coordinates.add(new Coordinate(x, y));
             }
-            return coordinates;
         }
+        return coordinates;
     }
 }
