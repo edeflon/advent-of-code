@@ -1,6 +1,7 @@
 package aoc.utilities;
 
 import aoc.year2016.day06.RepetitionCode;
+import aoc.year2016.day07.InternetProtocolVersion7;
 import aoc.year2017.day06.MemoryReallocation;
 import aoc.year2018.day06.ChronalCoordinates;
 import aoc.year2019.day06.UniversalOrbitMap;
@@ -30,6 +31,11 @@ public enum Exercise {
     // 2016
     REPETITION_CODE("2016", "06", (fileContent, isSecondPart) ->
             new RepetitionCode().recoverMessages(fileContent, isSecondPart)
+    ),
+
+    // 2016
+    INTERNET_PROTOCOL_VERSION_7("2016", "07", (fileContent, _isSecondPart) ->
+            new InternetProtocolVersion7().countIpsSupportingTls(fileContent)
     ),
 
     // 2017
