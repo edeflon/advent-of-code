@@ -5,6 +5,7 @@ import aoc.year2017.day06.MemoryReallocation;
 import aoc.year2018.day06.ChronalCoordinates;
 import aoc.year2018.day07.SumOfItsParts;
 import aoc.year2019.day06.UniversalOrbitMap;
+import aoc.year2020.day07.HandyHaversacks;
 import aoc.year2021.day06.LanternfishSimulation;
 import aoc.year2023.day02.CubeConundrum;
 import aoc.year2023.day01.Trebuchet;
@@ -49,6 +50,11 @@ public enum Exercise {
     // 2019
     UNIVERSAL_ORBIT_MAP("2019", "06", (fileContent, _isSecondPart) ->
             new UniversalOrbitMap().calculateOrbits(fileContent)
+    ),
+
+    // 2020
+    HANDY_HAVERSACKS("2020", "07", (fileContent, isSecondPart) ->
+            new HandyHaversacks().luggageProcessing(fileContent, isSecondPart)
     ),
 
     // 2021
