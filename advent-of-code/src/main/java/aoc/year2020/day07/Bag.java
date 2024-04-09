@@ -33,10 +33,19 @@ public class Bag {
     /**
      * Count how many bags are inside the bag
      *
+     * @return Number of bags inside the given bag
+     */
+    public int howManyBagsInside() {
+        return this.countBagsInside(0);
+    }
+
+    /**
+     * Count how many bags are inside the bag
+     *
      * @param counter Number of bags inside the given bag
      * @return Number of bags inside the given bag
      */
-    public int countBagsInside(int counter) {
+    private int countBagsInside(int counter) {
         return counter + this.getContainableBags().entrySet()
                 .stream()
                 .map(entry -> entry.getValue() + entry.getValue() * entry.getKey().countBagsInside(counter))

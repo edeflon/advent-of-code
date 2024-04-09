@@ -26,7 +26,7 @@ public class HandyHaversacks {
             int nbOfIndividualBagsInside = bags.stream()
                     .filter(bag -> bagType.equals(bag.getType()))
                     .findFirst()
-                    .map(bag -> bag.countBagsInside(0))
+                    .map(bag -> bag.howManyBagsInside())
                     .orElseThrow();
 
             log.info("{} individual bags are required inside your single {} bag", nbOfIndividualBagsInside, bagType);
