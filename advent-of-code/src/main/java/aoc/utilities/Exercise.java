@@ -4,6 +4,7 @@ import aoc.year2016.day06.RepetitionCode;
 import aoc.year2016.day07.InternetProtocolVersion7;
 import aoc.year2017.day06.MemoryReallocation;
 import aoc.year2018.day06.ChronalCoordinates;
+import aoc.year2018.day07.SumOfItsParts;
 import aoc.year2019.day06.UniversalOrbitMap;
 import aoc.year2021.day06.LanternfishSimulation;
 import aoc.year2022.day06.TuningTrouble;
@@ -46,6 +47,10 @@ public enum Exercise {
     // 2018
     CHRONAL_COORDINATES("2018", "06", (fileContent, _isSecondPart) ->
             new ChronalCoordinates().findLargestAreaSize(fileContent)
+    ),
+
+    SUM_OF_ITS_PARTS("2018", "07", (fileContent, _isSecondPart) ->
+            new SumOfItsParts().stepOrderExecution(fileContent)
     ),
 
     // 2019
