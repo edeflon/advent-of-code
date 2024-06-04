@@ -2,6 +2,7 @@ package aoc.utilities;
 
 import aoc.year2016.day06.RepetitionCode;
 import aoc.year2017.day06.MemoryReallocation;
+import aoc.year2017.day08.YouLikeRegisters;
 import aoc.year2018.day06.ChronalCoordinates;
 import aoc.year2019.day06.UniversalOrbitMap;
 import aoc.year2021.day06.LanternfishSimulation;
@@ -34,6 +35,10 @@ public enum Exercise {
     // 2017
     MEMORY_REALLOCATION("2017", "06", (fileContent, _isSecondPart) ->
             new MemoryReallocation().countRedistributionCyclesAndIterations(fileContent)
+    ),
+
+    YOU_LIKE_REGISTERS("2017", "08", (fileContent, _isSecondPart) ->
+            new YouLikeRegisters().largestValueInAnyRegister(fileContent)
     ),
 
     // 2018
