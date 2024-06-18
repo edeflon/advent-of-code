@@ -7,7 +7,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class Register {
-    String name;
-    int value;
+public class RegisterCalculation {
+    private String name;
+    private Instruction instruction;
+    private Condition condition;
 }
