@@ -8,6 +8,7 @@ import aoc.year2018.day06.ChronalCoordinates;
 import aoc.year2018.day08.MemoryManeuver;
 import aoc.year2018.day07.SumOfItsParts;
 import aoc.year2019.day06.UniversalOrbitMap;
+import aoc.year2019.day08.SpaceImageFormat;
 import aoc.year2020.day07.HandyHaversacks;
 import aoc.year2021.day06.LanternfishSimulation;
 import aoc.year2021.day07.TreacheryOfWhales;
@@ -72,6 +73,10 @@ public enum Exercise {
     UNIVERSAL_ORBIT_MAP("2019", "06", (fileContent, _isSecondPart) ->
             new UniversalOrbitMap().calculateOrbits(fileContent)
     ),
+
+    SPACE_IMAGE_FORMAT("2019", "08", (fileContent, _isSecondPart) ->
+            new SpaceImageFormat().findLayerAndMultipliedDigits(fileContent)
+            ),
 
     // 2020
     HANDY_HAVERSACKS("2020", "07", (fileContent, isSecondPart) ->
@@ -147,6 +152,7 @@ public enum Exercise {
 
     POINT_OF_INCIDENCE("2023", "13", (fileContent, _isSecondPart) ->
             new PointOfIncidence().numberOfSummarizedNotes(fileContent)
+    ),
 
     PARABOLIC_REFLECTOR_DISH("2023", "14", (fileContent, _isSecondPart) ->
             new ParabolicReflectorDish().totalLoadOnNorth(fileContent)
