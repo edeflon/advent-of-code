@@ -4,6 +4,7 @@ import aoc.year2016.day06.RepetitionCode;
 import aoc.year2017.day06.MemoryReallocation;
 import aoc.year2017.day08.YouLikeRegisters;
 import aoc.year2018.day06.ChronalCoordinates;
+import aoc.year2018.day08.MemoryManeuver;
 import aoc.year2019.day06.UniversalOrbitMap;
 import aoc.year2021.day06.LanternfishSimulation;
 import aoc.year2023.day02.CubeConundrum;
@@ -44,6 +45,10 @@ public enum Exercise {
     // 2018
     CHRONAL_COORDINATES("2018", "06", (fileContent, _isSecondPart) ->
             new ChronalCoordinates().findLargestAreaSize(fileContent)
+    ),
+
+    MEMORY_MANEUVER("2018", "08", (fileContent, _isSecondPart) ->
+            new MemoryManeuver().sumAllMetadatas(fileContent)
     ),
 
     // 2019

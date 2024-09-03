@@ -39,8 +39,6 @@ public class YouLikeRegisters {
             if (highestValue < register.getValue()) {
                 highestValue = register.getValue();
             }
-
-            registersPerName.replace(register.getName(), register);
         }
 
         int largestValue = registersPerName.values().stream()
