@@ -8,6 +8,7 @@ import aoc.year2018.day07.SumOfItsParts;
 import aoc.year2019.day06.UniversalOrbitMap;
 import aoc.year2020.day07.HandyHaversacks;
 import aoc.year2021.day06.LanternfishSimulation;
+import aoc.year2021.day07.TreacheryOfWhales;
 import aoc.year2022.day06.TuningTrouble;
 import aoc.year2023.day02.CubeConundrum;
 import aoc.year2023.day01.Trebuchet;
@@ -69,6 +70,10 @@ public enum Exercise {
             new LanternfishSimulation().countLanternfishsPopulation(fileContent, isSecondPart)
     ),
 
+    TREACHERY_OF_WHALES("2021", "07", (fileContent, isSecondPart) ->
+            new TreacheryOfWhales().howMuchFuelSpentToAlign(fileContent, isSecondPart)
+    ),
+  
     // 2022
     TUNING_TROUBLE("2022", "06", (filename, isSecondPart) -> {
         try {
