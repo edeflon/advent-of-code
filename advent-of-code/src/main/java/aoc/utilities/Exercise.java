@@ -1,10 +1,17 @@
 package aoc.utilities;
 
 import aoc.year2016.day06.RepetitionCode;
+import aoc.year2016.day07.InternetProtocolVersion7;
 import aoc.year2017.day06.MemoryReallocation;
+import aoc.year2017.day08.YouLikeRegisters;
 import aoc.year2018.day06.ChronalCoordinates;
+import aoc.year2018.day08.MemoryManeuver;
+import aoc.year2018.day07.SumOfItsParts;
 import aoc.year2019.day06.UniversalOrbitMap;
+import aoc.year2020.day07.HandyHaversacks;
 import aoc.year2021.day06.LanternfishSimulation;
+import aoc.year2021.day07.TreacheryOfWhales;
+import aoc.year2022.day06.TuningTrouble;
 import aoc.year2023.day02.CubeConundrum;
 import aoc.year2023.day01.Trebuchet;
 import aoc.year2023.day03.GearRatios;
@@ -18,6 +25,8 @@ import aoc.year2023.day10.PipeMaze;
 import aoc.year2023.day11.CosmicExpansion;
 import aoc.year2023.day12.HotSprings;
 import aoc.year2023.day13.PointOfIncidence;
+import aoc.year2023.day14.ParabolicReflectorDish;
+import aoc.year2023.day15.LensLibrary;
 import lombok.Getter;
 
 import java.io.IOException;
@@ -31,9 +40,18 @@ public enum Exercise {
             new RepetitionCode().recoverMessages(fileContent, isSecondPart)
     ),
 
+    // 2016
+    INTERNET_PROTOCOL_VERSION_7("2016", "07", (fileContent, _isSecondPart) ->
+            new InternetProtocolVersion7().countIpsSupportingTls(fileContent)
+    ),
+
     // 2017
     MEMORY_REALLOCATION("2017", "06", (fileContent, _isSecondPart) ->
             new MemoryReallocation().countRedistributionCyclesAndIterations(fileContent)
+    ),
+
+    YOU_LIKE_REGISTERS("2017", "08", (fileContent, _isSecondPart) ->
+            new YouLikeRegisters().largestValueInAnyRegister(fileContent)
     ),
 
     // 2018
@@ -41,15 +59,41 @@ public enum Exercise {
             new ChronalCoordinates().findLargestAreaSize(fileContent)
     ),
 
+    SUM_OF_ITS_PARTS("2018", "07", (fileContent, _isSecondPart) ->
+            new SumOfItsParts().stepOrderExecution(fileContent)
+    ),
+
+    MEMORY_MANEUVER("2018", "08", (fileContent, _isSecondPart) ->
+            new MemoryManeuver().sumAllMetadatas(fileContent)
+    ),
+  
     // 2019
     UNIVERSAL_ORBIT_MAP("2019", "06", (fileContent, _isSecondPart) ->
             new UniversalOrbitMap().calculateOrbits(fileContent)
+    ),
+
+    // 2020
+    HANDY_HAVERSACKS("2020", "07", (fileContent, isSecondPart) ->
+            new HandyHaversacks().luggageProcessing(fileContent, isSecondPart)
     ),
 
     // 2021
     LANTERNFISH_SIMULATION("2021", "06", (fileContent, isSecondPart) ->
             new LanternfishSimulation().countLanternfishsPopulation(fileContent, isSecondPart)
     ),
+
+    TREACHERY_OF_WHALES("2021", "07", (fileContent, isSecondPart) ->
+            new TreacheryOfWhales().howMuchFuelSpentToAlign(fileContent, isSecondPart)
+    ),
+  
+    // 2022
+    TUNING_TROUBLE("2022", "06", (filename, isSecondPart) -> {
+        try {
+            new TuningTrouble().countCharactersBeforeStartOfPacket(filename, isSecondPart);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }),
 
     // 2023
     TREBUCHET("2023", "01", (fileContent, _isSecondPart) ->
@@ -102,6 +146,13 @@ public enum Exercise {
 
     POINT_OF_INCIDENCE("2023", "13", (fileContent, _isSecondPart) ->
             new PointOfIncidence().numberOfSummarizedNotes(fileContent)
+
+    PARABOLIC_REFLECTOR_DISH("2023", "14", (fileContent, _isSecondPart) ->
+            new ParabolicReflectorDish().totalLoadOnNorth(fileContent)
+    ),
+
+    LENS_LIBRARY("2023", "15", (fileContent, _isSecondPart) ->
+            new LensLibrary().sumOfResults(fileContent)
     );
 
     @Getter
