@@ -1,6 +1,7 @@
 package aoc.utilities;
 
 import aoc.year2016.day06.RepetitionCode;
+import aoc.year2016.day07.InternetProtocolVersion7;
 import aoc.year2017.day06.MemoryReallocation;
 import aoc.year2018.day06.ChronalCoordinates;
 import aoc.year2018.day07.SumOfItsParts;
@@ -8,6 +9,7 @@ import aoc.year2019.day06.UniversalOrbitMap;
 import aoc.year2020.day07.HandyHaversacks;
 import aoc.year2021.day06.LanternfishSimulation;
 import aoc.year2021.day07.TreacheryOfWhales;
+import aoc.year2022.day06.TuningTrouble;
 import aoc.year2023.day02.CubeConundrum;
 import aoc.year2023.day01.Trebuchet;
 import aoc.year2023.day03.GearRatios;
@@ -32,6 +34,11 @@ public enum Exercise {
     // 2016
     REPETITION_CODE("2016", "06", (fileContent, isSecondPart) ->
             new RepetitionCode().recoverMessages(fileContent, isSecondPart)
+    ),
+
+    // 2016
+    INTERNET_PROTOCOL_VERSION_7("2016", "07", (fileContent, _isSecondPart) ->
+            new InternetProtocolVersion7().countIpsSupportingTls(fileContent)
     ),
 
     // 2017
@@ -66,6 +73,15 @@ public enum Exercise {
     TREACHERY_OF_WHALES("2021", "07", (fileContent, isSecondPart) ->
             new TreacheryOfWhales().howMuchFuelSpentToAlign(fileContent, isSecondPart)
     ),
+  
+    // 2022
+    TUNING_TROUBLE("2022", "06", (filename, isSecondPart) -> {
+        try {
+            new TuningTrouble().countCharactersBeforeStartOfPacket(filename, isSecondPart);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }),
 
     // 2023
     TREBUCHET("2023", "01", (fileContent, _isSecondPart) ->
