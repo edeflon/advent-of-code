@@ -5,6 +5,7 @@ import aoc.year2016.day07.InternetProtocolVersion7;
 import aoc.year2017.day06.MemoryReallocation;
 import aoc.year2017.day08.YouLikeRegisters;
 import aoc.year2018.day06.ChronalCoordinates;
+import aoc.year2018.day08.MemoryManeuver;
 import aoc.year2018.day07.SumOfItsParts;
 import aoc.year2019.day06.UniversalOrbitMap;
 import aoc.year2020.day07.HandyHaversacks;
@@ -60,6 +61,10 @@ public enum Exercise {
             new SumOfItsParts().stepOrderExecution(fileContent)
     ),
 
+    MEMORY_MANEUVER("2018", "08", (fileContent, _isSecondPart) ->
+            new MemoryManeuver().sumAllMetadatas(fileContent)
+    ),
+  
     // 2019
     UNIVERSAL_ORBIT_MAP("2019", "06", (fileContent, _isSecondPart) ->
             new UniversalOrbitMap().calculateOrbits(fileContent)

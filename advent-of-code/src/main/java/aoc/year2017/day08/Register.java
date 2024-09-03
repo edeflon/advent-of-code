@@ -8,6 +8,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class Register {
-    String name;
-    int value;
+    private String name;
+    private int value;
 }
