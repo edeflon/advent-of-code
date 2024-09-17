@@ -65,7 +65,6 @@ public class HandheldHalting {
         Set<Integer> executedIndex = new HashSet<>();
 
         do {
-            executedIndex.add(index);
             Operation currentOperation = operations.get(index);
             switch(currentOperation.getType()) {
                 case ACC :
@@ -79,7 +78,7 @@ public class HandheldHalting {
                     index++;
                     break;
             }
-        } while (!executedIndex.contains(index));
+        } while (executedIndex.add(index));
 
         return acc;
     }
@@ -90,7 +89,6 @@ public class HandheldHalting {
         Set<Integer> executedIndex = new HashSet<>();
 
         do {
-            executedIndex.add(index);
             Operation currentOperation = operations.get(index);
             switch(currentOperation.getType()) {
                 case ACC :
@@ -104,7 +102,7 @@ public class HandheldHalting {
                     index++;
                     break;
             }
-        } while (index < operations.size() && !executedIndex.contains(index));
+        } while (index < operations.size() && executedIndex.add(index));
 
         if (index >= operations.size() && !executedIndex.contains(index)) {
             return Optional.of(acc);
