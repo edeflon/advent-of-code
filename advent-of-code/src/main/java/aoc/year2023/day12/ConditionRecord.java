@@ -19,7 +19,7 @@ public class ConditionRecord {
 //        List<RecordGroup> unknownGroups = this.findRecordGroups(RecordType.UNKNOWN);
 
         // Reconstruct matching damaged groups with duplicatedInformations
-        List<Integer> checkedInformations = this.findInformationsAvailableInGroups(damagedGroups);
+//        List<Integer> checkedInformations = this.findInformationsAvailableInGroups(damagedGroups);
 
         // Count remaining possible positions in
         return 0L;
@@ -63,5 +63,7 @@ public class ConditionRecord {
 
             // If no -> try to complete with unknown
         }
+
+        return new ArrayList<>();
     }
 }
