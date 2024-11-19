@@ -15,6 +15,7 @@ import aoc.year2021.day06.LanternfishSimulation;
 import aoc.year2021.day07.TreacheryOfWhales;
 import aoc.year2021.day08.SevenSegmentSearch;
 import aoc.year2022.day06.TuningTrouble;
+import aoc.year2022.day08.TreetopTreeHouse;
 import aoc.year2023.day02.CubeConundrum;
 import aoc.year2023.day01.Trebuchet;
 import aoc.year2023.day03.GearRatios;
@@ -109,6 +110,10 @@ public enum Exercise {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }),
+
+    TREE_TOP_TREE_HOUSE("2022", "08", (filename, isSecondPart) -> {
+        new TreetopTreeHouse().countTreesVisibleFromOutsideGrid(filename);
     }),
 
     // 2023
