@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -13,15 +12,18 @@ import java.util.regex.Pattern;
 @Slf4j
 public class HandheldHalting {
 
+    private record Result(int acc, boolean isComplete) {}
+
     public void accumulatorCalculations(List<String> fileContent) {
         List<Operation> operations = extractOperation(fileContent);
 
         // PART 1
-        int acc = this.accumulator(operations);
-        log.info("The value in the accumulator is {}.", acc);
+        Result loopResult = this.accumulator(operations);
+        log.info("The value in the accumulator is {}.", loopResult.acc());
 
         // PART 2
         List<Operation> reparedOperations = new ArrayList<>(operations);
+        int acc = -1;
         for (Operation operation: reparedOperations) {
             if (!operation.getType().equals(OperationType.ACC)) {
                 OperationType initialType = operation.getType();
@@ -31,14 +33,13 @@ public class HandheldHalting {
                     operation.setType(OperationType.JMP);
                 }
 
-                Optional<Integer> optionalAcc = this.completeAccumulator(reparedOperations);
-
-                if (optionalAcc.isPresent()) {
-                    acc = optionalAcc.get();
+                Result realResult = this.accumulator(reparedOperations);
+                if (realResult.isComplete()) {
+                    acc = realResult.acc();
                     break;
-                } else {
-                    operation.setType(initialType);
                 }
+
+                operation.setType(initialType);
             }
         }
 
@@ -59,31 +60,7 @@ public class HandheldHalting {
         return operations;
     }
 
-    private int accumulator(List<Operation> operations) {
-        int index = 0;
-        int acc = 0;
-        Set<Integer> executedIndex = new HashSet<>();
-
-        do {
-            Operation currentOperation = operations.get(index);
-            switch(currentOperation.getType()) {
-                case ACC :
-                    acc += currentOperation.getValue();
-                    index++;
-                    break;
-                case JMP :
-                    index += currentOperation.getValue();
-                    break;
-                default:
-                    index++;
-                    break;
-            }
-        } while (executedIndex.add(index));
-
-        return acc;
-    }
-
-    private Optional<Integer> completeAccumulator(List<Operation> operations) {
+    private Result accumulator(List<Operation> operations) {
         int index = 0;
         int acc = 0;
         Set<Integer> executedIndex = new HashSet<>();
@@ -104,10 +81,6 @@ public class HandheldHalting {
             }
         } while (index < operations.size() && executedIndex.add(index));
 
-        if (index >= operations.size() && !executedIndex.contains(index)) {
-            return Optional.of(acc);
-        }
-
-        return Optional.empty();
+        return new Result(acc, index >= operations.size() && !executedIndex.contains(index));
     }
 }

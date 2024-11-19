@@ -13,6 +13,7 @@ import aoc.year2020.day07.HandyHaversacks;
 import aoc.year2020.day08.HandheldHalting;
 import aoc.year2021.day06.LanternfishSimulation;
 import aoc.year2021.day07.TreacheryOfWhales;
+import aoc.year2021.day08.SevenSegmentSearch;
 import aoc.year2022.day06.TuningTrouble;
 import aoc.year2023.day02.CubeConundrum;
 import aoc.year2023.day01.Trebuchet;
@@ -69,7 +70,7 @@ public enum Exercise {
     MEMORY_MANEUVER("2018", "08", (fileContent, _isSecondPart) ->
             new MemoryManeuver().sumAllMetadatas(fileContent)
     ),
-  
+
     // 2019
     UNIVERSAL_ORBIT_MAP("2019", "06", (fileContent, _isSecondPart) ->
             new UniversalOrbitMap().calculateOrbits(fileContent)
@@ -77,7 +78,7 @@ public enum Exercise {
 
     SPACE_IMAGE_FORMAT("2019", "08", (fileContent, _isSecondPart) ->
             new SpaceImageFormat().findLayerAndMultipliedDigits(fileContent)
-            ),
+    ),
 
     // 2020
     HANDY_HAVERSACKS("2020", "07", (fileContent, isSecondPart) ->
@@ -96,7 +97,11 @@ public enum Exercise {
     TREACHERY_OF_WHALES("2021", "07", (fileContent, isSecondPart) ->
             new TreacheryOfWhales().howMuchFuelSpentToAlign(fileContent, isSecondPart)
     ),
-  
+
+    SEVEN_SEGMENT_SEARCH("2021", "08", (fileContent, _isSecondPart) ->
+            new SevenSegmentSearch().sevenSegmentSearch(fileContent)
+    ),
+
     // 2022
     TUNING_TROUBLE("2022", "06", (filename, isSecondPart) -> {
         try {
