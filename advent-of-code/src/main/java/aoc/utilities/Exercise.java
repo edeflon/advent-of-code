@@ -31,6 +31,7 @@ import aoc.year2023.day13.PointOfIncidence;
 import aoc.year2023.day14.ParabolicReflectorDish;
 import aoc.year2023.day15.LensLibrary;
 import aoc.year2023.day16.FloorWillBeLava;
+import aoc.year2024.day01.HistorianHysteria;
 import lombok.Getter;
 
 import java.io.IOException;
@@ -174,6 +175,12 @@ public enum Exercise {
 
     FLOOR_WILL_BE_LAVA("2023", "16", (fileContent, _isSecondPart) ->
             new FloorWillBeLava().countTilesEnergized(fileContent)
+    ),
+
+    // 2024
+
+    HISTORIAN_HYSTERIA("2024", "01", (fileContent, _isSecondPart) ->
+            new HistorianHysteria().totalDistanceBetweenLists(fileContent)
     );
 
     @Getter
