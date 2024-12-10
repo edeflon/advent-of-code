@@ -34,6 +34,7 @@ import aoc.year2023.day16.FloorWillBeLava;
 import aoc.year2024.day01.HistorianHysteria;
 import aoc.year2024.day02.RedNosedReports;
 import aoc.year2024.day03.MullItOver;
+import aoc.year2024.day04.CeresSearch;
 import lombok.Getter;
 
 import java.io.IOException;
@@ -180,7 +181,6 @@ public enum Exercise {
     ),
 
     // 2024
-
     HISTORIAN_HYSTERIA("2024", "01", (fileContent, _isSecondPart) ->
             new HistorianHysteria().totalDistanceBetweenLists(fileContent)
     ),
@@ -191,6 +191,10 @@ public enum Exercise {
 
     MULL_IT_OVER("2024", "03", (fileContent, isSecondPart) ->
             new MullItOver().multiplications(fileContent, isSecondPart)
+    ),
+
+    CERES_SEARCH("2024", "04", (fileContent, _isSecondPart) ->
+            new CeresSearch().xmasCount(fileContent)
     );
 
     @Getter
