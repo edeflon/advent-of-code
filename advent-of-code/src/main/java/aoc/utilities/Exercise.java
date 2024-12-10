@@ -33,6 +33,7 @@ import aoc.year2023.day15.LensLibrary;
 import aoc.year2023.day16.FloorWillBeLava;
 import aoc.year2024.day01.HistorianHysteria;
 import aoc.year2024.day02.RedNosedReports;
+import aoc.year2024.day03.MullItOver;
 import lombok.Getter;
 
 import java.io.IOException;
@@ -186,6 +187,10 @@ public enum Exercise {
 
     RED_NOSED_REPORTS("2024", "02", (fileContent, _isSecondPart) ->
             new RedNosedReports().reportsAreSafe(fileContent)
+    ),
+
+    MULL_IT_OVER("2024", "03", (fileContent, isSecondPart) ->
+            new MullItOver().multiplications(fileContent, isSecondPart)
     );
 
     @Getter
